@@ -1,7 +1,8 @@
 Package: adePEM
 Title: Evaluate the adequacy of phyletic evolution models
 Version: 0.9
-Authors@R: person(«Kjetil», «Voje», email = «k.l.voje@gmail.com", role = c("aut", "cre"))
+Authors@R: person("First", "Last", email = "first.last@example.com",
+                  role = c("aut", "cre"))
 Description: The package contains functions to evaluate the adequacy of the models of phyletic evolution (stasis, random walk, directional trend) implemented the paleoTS package (Hunt 2006; 2008; 2015). Whether a particular model represents an adequate statistical description of a time series of phyletic change is evaluated using parametric bootstrap routines and summary statistics.  
 Depends: R (>= 3.4.3)
 Imports:
