@@ -1,0 +1,62 @@
+#' @title Calculating the number of runs
+#'
+#' @description This function calculates the number of runs of succesive positive or
+#' negative deviations from the theta (if model = stasis) or the mean of the normal distribution
+#' of the data.
+#' This function is used by other functions and will generally not be used directly by users.
+#'
+#' @param x vector of sample means
+#'
+#' @param model the model being evaluated
+#'
+#' @param theta the value of theta if model = stasis
+#'
+#' @details The runs test is applied to the sign of the residuals (i.e. θ – trait value)
+#' to identify series that have non-random patterns in the sign of deviations. For a time
+#' series of length n, the number of runs (one run is a sequence of consecutive numbers with
+#' same sign), is approximately normal with mean μ=(2(n_+*n_-))/n+1 and variance (μ-1)(μ-2)/(n-1),
+#' where n+ and n- are the number of residuals above and below the optimum respectively.
+#'
+#' @return net evolution
+#'
+#' @export
+#'
+#' @seealso
+#'
+#' @examples
+#'
+#'
+
+
+runs.test <- function(x, model, theta=NULL){
+  if (model=="BM")
+  {
+    x<-x-x[1]
+    x<-diff(x,1)
+    x<-c(0,x)
+
+    mu = 2*(sum(x>mean(x))*sum(x<mean(x)))/length(x) +1;
+    # with variance
+    vr = (mu-1)*(mu-2)/(length(x)-1);
+    z = (sum(diff(sign(x-mean(x)))!=0)+1 - mu)/sqrt(vr)
+  }
+  if (model=="DT")
+  {
+    x<-detrend(x)
+
+    mu = 2*(sum(x>mean(x))*sum(x<mean(x)))/length(x) +1;
+    # with variance
+    vr = (mu-1)*(mu-2)/(length(x)-1);
+    z = (sum(diff(sign(x-mean(x)))!=0)+1 - mu)/sqrt(vr)
+  }
+
+  if (model=="stasis")
+  {
+  mu = 2*(sum(x>theta)*sum(x<theta))/length(x) +1;
+  # with variance
+  vr = (mu-1)*(mu-2)/(length(x)-1);
+  z = (sum(diff(sign(x-theta))!=0)+1 - mu)/sqrt(vr)
+  }
+
+  return(z)
+}
