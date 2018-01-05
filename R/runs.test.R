@@ -19,13 +19,7 @@
 #'
 #' @return net evolution
 #'
-#' @export
-#'
-#' @seealso
-#'
-#' @examples
-#'
-#'
+
 
 
 runs.test <- function(x, model, theta=NULL){

@@ -63,7 +63,7 @@
 #'## investigate if the time series pass the adequasy test
 #'slope.test.stasis(x,theta,omega)
 #'
-#'@export
+
 
 
 slope.test.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){

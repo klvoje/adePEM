@@ -16,13 +16,6 @@
 #'
 #' @return least-square slope estimate
 #'
-#' @export
-#'
-#' @seealso
-#'
-#' @examples
-#'
-#'
 
 slope.test <- function(x, time, model){
   if (model=="BM")

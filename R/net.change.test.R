@@ -14,12 +14,6 @@
 #'
 #' @return net evolution
 #'
-#' @export
-#'
-#' @seealso
-#'
-#' @examples
-#'
 #'
 
 net.change.test<-function(x, model){

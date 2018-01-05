@@ -15,13 +15,7 @@
 #'
 #' @return the autocorrelation
 #'
-#' @export
-#'
-#' @seealso
-#'
-#' @examples
-#'
-#'
+
 
 auto.corr <- function(x, model){
   if (model=="BM")
