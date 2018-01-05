@@ -101,7 +101,7 @@ runs.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicate
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test");
+    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test", xlab="Simulated data", main="Runs");
   }
 
   #Prepearing the outout

@@ -106,7 +106,7 @@ runs.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.re
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test");
+    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test", xlab="Simulated data", main="Runs");
   }
 
   #Prepearing the outout

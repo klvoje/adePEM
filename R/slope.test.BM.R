@@ -96,7 +96,7 @@ slope.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicat
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test");
+    plot.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Fixed variance");
   }
 
   #Prepearing the outout

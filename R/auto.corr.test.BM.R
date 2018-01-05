@@ -99,7 +99,7 @@ auto.corr.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.repl
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE){
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr");
+    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
   }
 
   #Prepearing the outout
