@@ -105,7 +105,7 @@ runs.test.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE, sav
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test");
+    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test", xlab="Simulated data", main="Runs");
   }
 
 
