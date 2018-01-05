@@ -40,7 +40,7 @@
 #'plot.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.corr")
 #'
 
-plot.distributions<-function(sim.data, obs, test){
+plot.distributions<-function(sim.data, obs, test, xlab, main){
 
   if(test=="auto.corr") {
   low<--1;
@@ -59,7 +59,7 @@ plot.distributions<-function(sim.data, obs, test){
     high<-max(sim.data,obs)
   }
 
-  hist(sim.data, xlim=c(low,high))
+  hist(sim.data, xlim=c(low,high), xlab=xlab, main=main)
   abline(v=obs, col="red", lty=2, lwd=2)
 
 }
