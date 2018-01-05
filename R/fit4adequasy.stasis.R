@@ -48,7 +48,7 @@
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
 #'@seealso \code{\link{fit3adequasy.BM}}, \code{\link{fit3adequasy.trend}}
-#'
+#' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a stasis time series
 #'x <- sim.Stasis(ns = 40, theta = 0, omega = 0.1)

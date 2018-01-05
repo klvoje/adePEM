@@ -16,7 +16,7 @@
 #' series of length n, the number of runs (one run is a sequence of consecutive numbers with
 #' same sign), is approximately normal with mean μ=(2(n_+*n_-))/n+1 and variance (μ-1)(μ-2)/(n-1),
 #' where n+ and n- are the number of residuals above and below the optimum respectively.
-#'
+#' @export
 #' @return net evolution
 #'
 

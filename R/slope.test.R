@@ -13,7 +13,7 @@
 #' (their absolute value) from the optimal phenotype as a function of time. If model = random walk or directional
 #' trend: Estimates the slope of the least square regression of the size of the detrended data as a function of time.
 #' This function is used by other functions and will generally not be used directly by users.
-#'
+#' @export
 #' @return least-square slope estimate
 #'
 
