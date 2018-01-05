@@ -26,10 +26,3 @@ If model = stasis: Estimates the slope of the least square regression of the siz
 trend: Estimates the slope of the least square regression of the size of the detrended data as a function of time.
 This function is used by other functions and will generally not be used directly by users.
 }
-\examples{
-
-
-}
-\seealso{
-
-}

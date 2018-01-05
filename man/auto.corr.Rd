@@ -25,10 +25,3 @@ aurocorrelation is calculated directly on the sample means if the evaluated mode
 If a different model is evaluated (random walk or directional trend), the data is
 detrended prior to the calculation of autocorrelation.
 }
-\examples{
-
-
-}
-\seealso{
-
-}
