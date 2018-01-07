@@ -86,3 +86,5 @@ auto.corr   0.15903 -0.07639 0.93098   0.034 FAILED
 runs.test  -0.41179 -4.93166 1.71372   0.042 FAILED
 slope.test  0.00355 -0.07232 0.06886   0.862 PASSED
 ```
+
+![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.trend.png)
