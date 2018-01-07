@@ -24,19 +24,19 @@ We are interested in analyzing the evolution of element length in the conodont P
 The data (Jones.2009.element.length) is already a paleoTS object. We first plot the data and run the fot3modells function from the PaleoTS package to check the relatice fit of the stasis, random walk and directional trend model to the data.
 
 ```
-plot(Jones.2009.element.length)
+plot(element.length)
 ```
 ![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/phenetic.evolution.element.length.png)
 
 ```
-fit3models(Jones.2009.element.length, pool=TRUE)
+fit3models(element.length, pool=TRUE)
 
 Comparing 3 models [n = 31, method = Joint]
 
            logL K      AICc Akaike.wt
-GRW    25.10953 3 -43.33018     0.257
-URW    24.85294 2 -45.27732     0.680
-Stasis 22.47400 2 -40.51943     0.063
+GRW    25.38445 3 -43.88002     0.262
+URW    25.12370 2 -45.81882     0.690
+Stasis 22.47400 2 -40.51943     0.049
 ```
 
 The plot shows a trend in the data, but it is the random walk (URW) model that has the best fit to the data according to AICc. However, the difference is small (<2 AICc units) relative to he direcional trend model (GRW). 
@@ -45,11 +45,11 @@ Let's investigate if the random walk represents an adequate statistical descript
 
 The first thing we need to do is to estimate the step variance of the random walk model from the real data. This 'observed' step variance is needed to simulate a large number of time series where the trait evolves according to a random walk. Test statistics calculated on these simulate data will then be compared to the test statistics calculated on the real data.   
 ```
-# Estimating the vstep parameter from the data:
-vstep<-mle.URW(Jones.2009.element.length)[1]
+# Estimate the vstep parameter from the data:
+vstep<-mle.URW(element.length)[1]
 
 # Run adequasy test for the random walk model:
-fit3adequasy.BM(Jones.2009.element.length, vstep=vstep)
+fit3adequasy.BM(element.length, vstep=vstep)
 
 
 $info
@@ -59,10 +59,30 @@ confidense level    0.95
 
 $summary
            estimate  min.sim max.sim p-value Result
-auto.corr  -0.28775 -0.60974 0.30012   0.478 PASSED
-runs.test   1.09003 -2.37144 3.84622   0.512 PASSED
-slope.test -0.01112 -0.04811  0.0208   0.748 PASSED
+auto.corr    -0.318 -0.69919 0.38265   0.436 PASSED
+runs.test   1.09003 -2.73719 3.34277   0.526 PASSED
+slope.test  0.01199  -0.0217 0.04293   0.618 PASSED
 ```
 
-![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequast_BM.png)
+![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.BM.png)
 
+
+```
+# Estimate the mstep and vstep parameter from the data:
+mstep<-mle.GRW(element.length)[1]
+vstep<-mle.GRW(element.length)[2]
+
+# Run adequasy test for the directional trend model:
+fit3adequasy.BM(element.length, vstep=vstep)
+
+$info
+                   Value
+replications     1000.00
+confidense level    0.95
+
+$summary
+           estimate  min.sim max.sim p-value Result
+auto.corr   0.15903 -0.07639 0.93098   0.034 FAILED
+runs.test  -0.41179 -4.93166 1.71372   0.042 FAILED
+slope.test  0.00355 -0.07232 0.06886   0.862 PASSED
+```
