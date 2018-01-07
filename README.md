@@ -26,7 +26,7 @@ The data (Jones.2009.element.length) is already a paleoTS object. We first plot 
 ```
 plot(element.length)
 ```
-![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/phenetic.evolution.element.length.png)
+![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/time.series.png)
 
 ```
 fit3models(element.length, pool=TRUE)
@@ -64,7 +64,7 @@ runs.test   1.09003 -2.73719 3.34277   0.526 PASSED
 slope.test  0.01199  -0.0217 0.04293   0.618 PASSED
 ```
 
-![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.BM.png)
+![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.bm.png)
 
 
 ```
