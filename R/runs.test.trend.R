@@ -1,9 +1,11 @@
-#' @title Applying the runs test to the Random walk model
+#' @title Applying the runs test to the Directional trend model
 #'
-#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the Directional trend model is an adequate statistical description of an evolutionary
 #' time series by applying the runs test.
 #'
 #' @param y a paleoTS object
+#'
+#' @param mstep the mean of the step distribution estmated from the observed data.
 #'
 #' @param vstep the variance of the step distribution estmated from the observed data.
 #'
@@ -22,7 +24,7 @@
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
 #'
-#' @details This function applies a runs test in order to investigate if the random walk model can be judged an
+#' @details This function applies a runs test in order to investigate if the Directional trend model can be judged an
 #' adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
 #' from the average in the same direction and the runs test is applied to the sign of the residuals (i.e. θ – trait value)
 #' to identify series that have non-random patterns in the sign of deviations. For a time series of length n,
@@ -52,20 +54,23 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.BM}}, \code{\link{fit3adequasy.trend}}
+#'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.RW}}, \code{\link{fit3adequasy.trend}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
+#'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
+#'
+#'## estimate the mean of the step distribution
+#'mstep <- mle.GRW(x)[1]
 #'
 #'## estimate the variance of the step distribution
 #'vstep <- mle.GRW(x)[2]
 #'
 #'## investigate if the time series pass the adequasy test
-#'runs.test.BM(x,vstep)
+#'runs.test.trend(x,mstep,vstep)
 #'
 
-runs.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+runs.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -75,7 +80,7 @@ runs.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicate
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.runs.test<-runs.test(x, model="BM")
+  obs.runs.test<-runs.test(x, model="trend")
 
   ### Parametric bootstrap routine ###
 
@@ -85,9 +90,9 @@ runs.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicate
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="BM")
+    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="trend")
 
   }
 

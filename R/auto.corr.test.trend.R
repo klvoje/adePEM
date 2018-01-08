@@ -1,9 +1,11 @@
-#' @title Applying the autocorrelation test to the Random walk model
+#' @title Applying the autocorrelation test to the Directional trend model
 #'
-#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the Directional trend model is an adequate statistical description of an evolutionary
 #' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
+#'
+#' @param mstep the mean of the step distribution estmated from the observed data.
 #'
 #' @param vstep the variance of the step distribution estmated from the observed data.
 #'
@@ -49,20 +51,24 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.BM}}, \code{\link{auto.corr.test.DT}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
+#'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
+#'
+#'## estimate the mean of the step distribution
+#'mstep <- mle.GRW(x)[1]
 #'
 #'## estimate the variance of the step distribution
 #'vstep <- mle.GRW(x)[2]
 #'
 #'## investigate if the time series pass the adequasy test
-#'auto.corr.test.BM(x,vstep)
+#'auto.corr.test.trend(x,mstep,vstep)
 #'
 
-auto.corr.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+
+auto.corr.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -72,7 +78,7 @@ auto.corr.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.repl
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="BM")
+  obs.auto.corr<-auto.corr(x, model="trend")
 
   ### Parametric bootstrap routine ###
 
@@ -83,9 +89,9 @@ auto.corr.test.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.repl
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="BM")
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="trend")
 
   }
 

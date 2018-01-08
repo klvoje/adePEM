@@ -20,13 +20,13 @@
 
 
 auto.corr <- function(x, model){
-  if (model=="BM")
+  if (model=="RW")
     {
     x<-x-x[1]
     x<-diff(x,1)
     x<-c(0,x)
   }
-  if (model=="DT")
+  if (model=="trend")
     {
     x<-detrend(x)
   }

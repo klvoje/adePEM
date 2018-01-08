@@ -46,7 +46,7 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.BM}}, \code{\link{fit4adequasy.stasis}}
+#'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{fit4adequasy.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
@@ -73,14 +73,14 @@ fit3adequasy.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE){
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="DT")
-  obs.runs.test<-runs.test(x, model="DT")
-  obs.slope.test<-slope.test(x,time, model="DT")
+  obs.auto.corr<-auto.corr(x, model="trend")
+  obs.runs.test<-runs.test(x, model="trend")
+  obs.slope.test<-slope.test(x,time, model="trend")
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.DT(y, mstep, vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.DT(y, mstep, vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.DT(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.runs<-runs.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.slope<-slope.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
 
   #Prepearing the output
   output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

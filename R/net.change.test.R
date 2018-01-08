@@ -17,7 +17,7 @@
 #'
 
 net.change.test<-function(x, model){
-  if(model=="BM" | model=="DT" | model=="stasis"){
+  if(model=="RW" | model=="trend" | model=="stasis"){
     net.change<-abs(head(x,1)-tail(x,1))
     return(net.change)
   }

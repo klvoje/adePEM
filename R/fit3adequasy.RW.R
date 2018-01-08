@@ -51,13 +51,13 @@
 #'x <- sim.GRW(ns=40, ms=0, vs=0.1)
 #'
 #'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
+#'vstep <- mle.URW(x)[1]
 #'
 #'## Investigate if the time series pass all thee adequasy tests
-#'fit3adequasy.BM(x,vstep)
+#'fit3adequasy.RW(x,vstep)
 #'
 
-fit3adequasy.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequasy.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -68,14 +68,14 @@ fit3adequasy.BM<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="BM")
-  obs.runs.test<-runs.test(x, model="BM")
-  obs.slope.test<-slope.test(x,time, model="BM")
+  obs.auto.corr<-auto.corr(x, model="RW")
+  obs.runs.test<-runs.test(x, model="RW")
+  obs.slope.test<-slope.test(x,time, model="RW")
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.BM(y,vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.BM(y,vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.BM(y,vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.RW(y,vstep, nrep, conf, plot=FALSE)
+    out.runs<-runs.test.RW(y,vstep, nrep, conf, plot=FALSE)
+    out.slope<-slope.test.RW(y,vstep, nrep, conf, plot=FALSE)
 
   #Prepearing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

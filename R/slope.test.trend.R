@@ -48,7 +48,7 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.BM}}
+#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.RW}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
@@ -61,10 +61,10 @@
 #'vstep <- mle.GRW(x)[2]
 #'
 #'## investigate if the time series pass the adequasy test
-#'slope.test.DT(x,vstep)
+#'slope.test.trend(x,vstep)
 #'
 
-slope.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -74,7 +74,7 @@ slope.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x,time, model="DT")
+  obs.slope.test<-slope.test(x,time, model="trend")
 
   ### Parametric bootstrap routine ###
 
@@ -86,7 +86,7 @@ slope.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
 
     x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="DT")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="trend")
 
   }
 

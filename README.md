@@ -24,17 +24,20 @@ library("devtools")
 devtools::install_github("klvoje/adePEM")
 ```
 
-The package depends on the `paleoTS` and `pracma` libraries, which should load automatically when installing adePEM from github.
+The package depends on the `paleoTS` and `pracma` libraries, which should load automatically when installing `adePEM` from github.
 
 ## Example
 
-We are interested in analyzing the evolution of element length in the conodont Pterospathodus. The data is available as part of the `adePEM` package and was originally published by Jones (2009). The data (`element.length`) is already a `paleoTS` object. We first plot the data and run the `fit3models` function from the `paleoTS` package to check the relative fit of the stasis, random walk and directional trend models to the data.
+We are interested in analyzing the evolution of element length (measured in mm) in the conodont Pterospathodus. The data is available as part of the `adePEM` package and was originally published by Jones (2009). The data (`element.length`) is already a `paleoTS` object. We first plot the data. 
 
 ```
-plot(element.length)
+plot.paleoTS(element.length)
 ```
 ![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/time.series.png)
 
+Time (the x-axis) is in millions of years and the trait is measured in millimeters. Error bars represent one standard error.
+
+We then run the `fit3models` function from the `paleoTS` package to check the relative fit of the stasis, random walk and directional trend models to the data.
 ```
 fit3models(element.length, pool=TRUE)
 

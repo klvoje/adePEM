@@ -1,11 +1,9 @@
-#' @title Applying the runs test to the Directional trend model
+#' @title Applying the autocorrelation test to the Random walk model
 #'
-#' @description Investigates if the Directional trend model is an adequate statistical description of an evolutionary
-#' time series by applying the runs test.
+#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
-#'
-#' @param mstep the mean of the step distribution estmated from the observed data.
 #'
 #' @param vstep the variance of the step distribution estmated from the observed data.
 #'
@@ -13,7 +11,7 @@
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
 #' Number must be between 0 and 1. A higher number means less strict judgment of whether a model is adequate; default
-#' is 0.95. Tests are two-tailed, which means a model is judged adequate if the observed test statistic is within the 2.5
+#' is 0.95. Tests are two-tailed (except for the net evolution test), which means a model is judged adequate if the observed test statistic is within the 2.5
 #' percent of the extreeme values of the calculated test statistics on the simulated data given the default confidence
 #' value of 0.95.
 #'
@@ -24,14 +22,11 @@
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
 #'
-#' @details This function applies a runs test in order to investigate if the Directional trend model can be judged an
-#' adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
-#' from the average in the same direction and the runs test is applied to the sign of the residuals (i.e. θ – trait value)
-#' to identify series that have non-random patterns in the sign of deviations. For a time series of length n,
-#' the number of runs (one run is a sequence of consecutive numbers with same sign), is approximately normal
-#' with mean μ=(2(n_+ n_-))/n+1 and variance (μ-1)(μ-2)/(n-1), where n+ and n- are the number of residuals
-#' above and below the optimum respectively. The mean and variance are used to calculate the standard/Z-score
-#' implemented as the test statistic.
+#' @details This function calculates the autocorrelation in a vector of sample means
+#' defined as the correlation of the first n-1 observations with the last n-1. The
+#' aurocorrelation is calculated directly on the sample means if the evaluated model is stasis.
+#' If a different model is evaluated (random walk or directional trend), the data is
+#' detrended prior to the calculation of autocorrelation.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -54,23 +49,20 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.BM}}, \code{\link{fit3adequasy.trend}}
+#'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
-#'
-#'## estimate the mean of the step distribution
-#'mstep <- mle.GRW(x)[1]
+#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
 #'
 #'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
+#'vstep <- mle.URW(x)[1]
 #'
 #'## investigate if the time series pass the adequasy test
-#'runs.test.DT(x,mstep,vstep)
+#'auto.corr.test.RW(x,vstep)
 #'
 
-runs.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+auto.corr.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -80,51 +72,53 @@ runs.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.re
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.runs.test<-runs.test(x, model="DT")
+  obs.auto.corr<-auto.corr(x, model="RW")
 
   ### Parametric bootstrap routine ###
 
   #Matrix that will contain the test statistic for each simluated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
+
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="DT")
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="RW")
 
   }
 
-  # Estimating the ratio of how often the observed runs test is smaller than the runs tests in the simulated data
-  bootstrap.runs.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.runs.test])/nrep
+  # Estimating the ratio of how often the observed autocorrelation is smaller than the autocorrelation in the simulated data
+  bootstrap.auto.corr<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.auto.corr])/nrep
 
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.runs.test>round(upper,3) | bootstrap.runs.test<round(lower,3)) pass.runs.test<-"FAILED" else pass.runs.test<-"PASSED"
-  if(bootstrap.runs.test>0.5) bootstrap.runs.test<-1-bootstrap.runs.test
+  if (bootstrap.auto.corr>round(upper,3) | bootstrap.auto.corr<round(lower,3)) pass.auto.corr.test<-"FAILED" else pass.auto.corr.test<-"PASSED"
+  if(bootstrap.auto.corr>0.5) bootstrap.auto.corr<-1-bootstrap.auto.corr
 
   # Plot the test statistics estimated from the simulated data
-  if (plot==TRUE) {
+  if (plot==TRUE){
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.runs.test, test="runs.test", xlab="Simulated data", main="Runs");
+    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
   }
 
   #Prepearing the outout
-  output<-as.data.frame(cbind(round(obs.runs.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.runs.test/0.5, pass.runs.test), nrow=5, byrow=TRUE)
-  rownames(output)<-"runs.test"
-  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "Result")
+  output<-as.data.frame(cbind(round(obs.auto.corr,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.auto.corr/0.5, pass.auto.corr.test), nrow=5, byrow=TRUE)
+  rownames(output)<-"auto.corr"
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim", "p-value", "Result")
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidense level")
   colnames(summary.out)<-("Value")
   if (save.replicates==FALSE)
-  {
+    {
     out<- list("info" = summary.out, "summary" = output)
     return(out)
-  }
+    }
   else
   {
     out<- list("replicates" = bootstrap.matrix, "info" = summary.out, "summary" = output)
     return(out)
   }
+
 }

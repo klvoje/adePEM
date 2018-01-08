@@ -23,7 +23,7 @@
 
 
 runs.test <- function(x, model, theta=NULL){
-  if (model=="BM")
+  if (model=="RW")
   {
     x<-x-x[1]
     x<-diff(x,1)
@@ -34,7 +34,7 @@ runs.test <- function(x, model, theta=NULL){
     vr = (mu-1)*(mu-2)/(length(x)-1);
     z = (sum(diff(sign(x-mean(x)))!=0)+1 - mu)/sqrt(vr)
   }
-  if (model=="DT")
+  if (model=="trend")
   {
     x<-detrend(x)
 

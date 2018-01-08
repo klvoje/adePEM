@@ -1,11 +1,9 @@
-#' @title Applying the autocorrelation test to the Directional trend model
+#' @title Applying the constant variance test to the Random walk model
 #'
-#' @description Investigates if the Directional trend model is an adequate statistical description of an evolutionary
-#' time series by applying the autocorrelation test.
+#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' time series by applying the constant variance test.
 #'
 #' @param y a paleoTS object
-#'
-#' @param mstep the mean of the step distribution estmated from the observed data.
 #'
 #' @param vstep the variance of the step distribution estmated from the observed data.
 #'
@@ -24,11 +22,8 @@
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
 #'
-#' @details This function calculates the autocorrelation in a vector of sample means
-#' defined as the correlation of the first n-1 observations with the last n-1. The
-#' aurocorrelation is calculated directly on the sample means if the evaluated model is stasis.
-#' If a different model is evaluated (random walk or directional trend), the data is
-#' detrended prior to the calculation of autocorrelation.
+#' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
+#' as a function of time.as a function of time.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -51,24 +46,21 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{auto.corr.test.BM}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.trend}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
-#'
-#'## estimate the mean of the step distribution
-#'mstep <- mle.GRW(x)[1]
+#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
 #'
 #'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
+#'vstep <- mle.URW(x)[1]
 #'
 #'## investigate if the time series pass the adequasy test
-#'auto.corr.test.DT(x,mstep,vstep)
+#'slope.test.RW(x,vstep)
 #'
 
 
-auto.corr.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -78,53 +70,52 @@ auto.corr.test.DT<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, sa
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="DT")
+  obs.slope.test<-slope.test(x,time, model="RW")
 
   ### Parametric bootstrap routine ###
 
   #Matrix that will contain the test statistic for each simluated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
-
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="DT")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="RW")
 
   }
 
-  # Estimating the ratio of how often the observed autocorrelation is smaller than the autocorrelation in the simulated data
-  bootstrap.auto.corr<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.auto.corr])/nrep
+  # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
+  bootstrap.slope.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.slope.test])/nrep
 
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.auto.corr>round(upper,3) | bootstrap.auto.corr<round(lower,3)) pass.auto.corr.test<-"FAILED" else pass.auto.corr.test<-"PASSED"
-  if(bootstrap.auto.corr>0.5) bootstrap.auto.corr<-1-bootstrap.auto.corr
+  if (bootstrap.slope.test>round(upper,3) | bootstrap.slope.test<round(lower,3)) pass.slope.test<-"FAILED" else pass.slope.test<-"PASSED"
+  if(bootstrap.slope.test>0.5) bootstrap.slope.test<-1-bootstrap.slope.test
 
   # Plot the test statistics estimated from the simulated data
-  if (plot==TRUE){
+  if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
+    plot.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Fixed variance");
   }
 
   #Prepearing the outout
-  output<-as.data.frame(cbind(round(obs.auto.corr,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.auto.corr/0.5, pass.auto.corr.test), nrow=5, byrow=TRUE)
-  rownames(output)<-"auto.corr"
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim", "p-value", "Result")
+  output<-as.data.frame(cbind(round(obs.slope.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.slope.test/0.5, pass.slope.test), nrow=5, byrow=TRUE)
+  rownames(output)<-"slope.test"
+  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "Result")
+
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidense level")
   colnames(summary.out)<-("Value")
   if (save.replicates==FALSE)
-    {
+  {
     out<- list("info" = summary.out, "summary" = output)
     return(out)
-    }
+  }
   else
   {
     out<- list("replicates" = bootstrap.matrix, "info" = summary.out, "summary" = output)
     return(out)
   }
-
 }

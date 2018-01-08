@@ -48,7 +48,7 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit4adequasy.stasis}}, \code{\link{slope.test.BM}}, \code{\link{slope.test.DT}}
+#'@seealso \code{\link{fit4adequasy.stasis}}, \code{\link{slope.test.RW}}, \code{\link{slope.test.trend}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a stasis time series
@@ -76,7 +76,7 @@ slope.test.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE, sa
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x,time, model="stasis")
+  obs.slope.test<-slope.test(x,time, model="stasis", theta=theta)
 
 
   ### Parametric bootstrap routine ###
@@ -89,7 +89,7 @@ slope.test.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE, sa
 
     x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = time)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="stasis")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="stasis", theta=theta)
 
   }
 

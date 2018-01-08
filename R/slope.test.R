@@ -9,6 +9,8 @@
 #'
 #' @param model the model being evaluated
 #'
+#' @param theta if the tested model is stasis, theta is the estimated theta from the data.
+#'
 #' @details If model = stasis: Estimates the slope of the least square regression of the size of deviations
 #' (their absolute value) from the optimal phenotype as a function of time. If model = random walk or directional
 #' trend: Estimates the slope of the least square regression of the size of the detrended data as a function of time.
@@ -17,8 +19,8 @@
 #' @return least-square slope estimate
 #'
 
-slope.test <- function(x, time, model){
-  if (model=="BM")
+slope.test <- function(x, time, model, theta=NULL){
+  if (model=="RW")
   {
     x<-x-x[1]
     x<-diff(x,1)
@@ -26,11 +28,18 @@ slope.test <- function(x, time, model){
     slope.est<-(lm((abs(x))~time)$coeff[2])
   }
 
-  if (model =="DT")
-      {
+  if (model =="trend")
+  {
         x<-detrend(x)
-      }
-  slope.est<-(lm((abs(x))~time)$coeff[2])
+        slope.est<-(lm((abs(x))~time)$coeff[2])
+  }
+
+   if (model =="stasis")
+  {
+    resid_stasis<-abs(x-theta)
+    slope.est<-lm(resid_stasis~time)$coeff[2]
+  }
+
   return(slope.est)
 }
 
