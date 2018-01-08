@@ -1,4 +1,4 @@
-## About adePEM (Assessing adequasy of phyletic evolution models) 
+## About adePEM (Assessing adequasy of phyletic-evolution models) 
 
 This package allows assessing the adequasy of the three canonical models of evolution in the fossil record, stasis, directional trends and random walk developed by Hunt (2006) and implemented in the R package `paleoTS`.  
 
