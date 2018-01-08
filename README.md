@@ -59,7 +59,7 @@ Before we run the adequasy tests, we need to estimate the step variance of the r
 vstep<-mle.URW(element.length)[1]
 
 # Run adequasy test for the random walk model:
-fit3adequasy.BM(element.length, vstep=vstep)
+fit3adequasy.RW(element.length, vstep=vstep)
 
 
 $info
@@ -100,7 +100,7 @@ mstep<-mle.GRW(element.length)[1]
 vstep<-mle.GRW(element.length)[2]
 
 # Run adequasy test for the directional trend model:
-fit3adequasy.BM(element.length, vstep=vstep)
+fit3adequasy.trend(element.length, vstep=vstep)
 
 $info
                    Value
@@ -117,7 +117,7 @@ The directional trend model fails both the autocorrelation test and the runs tes
 
 ![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.trend.png)
 
-Functions for running each test alone are provided in the package (e.g. `auto.corr.test.stasis`, `runs.test.BM`, `slope.test.DT`). The wrapper function for investigating the adequasy for the stasis model is `fit4adequasy.stasis`. One of the tests run by this function is only implemented for stasis (test of to large levers of net evolution), as low amounts of net evolution is part of the verbal definition of stasis, but not for random walk and directional trend.
+Functions for running each test alone are provided in the package (e.g. `auto.corr.test.stasis`, `runs.test.RW`, `slope.test.trend`). The wrapper function for investigating the adequasy for the stasis model is `fit4adequasy.stasis`. One of the tests run by this function is only implemented for stasis (test of to large levers of net evolution), as low amounts of net evolution is part of the verbal definition of stasis, but not for random walk and directional trend.
 
 ## Author
 
