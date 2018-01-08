@@ -51,7 +51,7 @@ Stasis 22.47400 2 -40.51943     0.049
 
 The random walk (URW) model has the best fit to the data according to the AICc scores. However, the difference in the AICc score is small (<2 units) relative to the direcional trend model (GRW). 
 
-Let's investigate if the random walk represents an adequate statistical description of the trait dynamics in the data. To do that, we run the function `fit3adequasy.BM` from the `adePEM` package. This is a wrapper function that runs 3 adequasy tests at the same time. 
+Let's investigate if the random walk represents an adequate statistical description of the trait dynamics in the data. To do that, we run the function `fit3adequasy.RW` from the `adePEM` package. This is a wrapper function that runs 3 adequasy tests at the same time. 
 
 Before we run the adequasy tests, we need to estimate the step variance of the random walk model from the real data. This is done using the `mle.URW` function from the `PaleoTS` package. The estimated step variance is used to simulate a large number of time series where the trait evolves according to a random walk. Test statistics calculated on these simulated data will then be compared to the test statistics calculated on the real data.  
 ```
@@ -84,7 +84,7 @@ The fifth column is not a real p-value, but is calculated as the fraction of sim
 
 The sixth column indicates whether our model passed the adequasy tests. Since we set our confidence level to 0.95 and all values in the fifth column is larger than 0.05, this means the random walk passed all tests for our data set. 
 
-That the random walk model passed all tests can also be seen in the visual representation of the distributions of test statistics, where the test statistics computed for the real data is indicated with a broken (red) line. These plots are generated automatically if 'plot = TRUE' (which is the default setting) when we run the `fit3adequasy.BM` function.   
+That the random walk model passed all tests can also be seen in the visual representation of the distributions of test statistics, where the test statistics computed for the real data is indicated with a broken (red) line. These plots are generated automatically if 'plot = TRUE' (which is the default setting) when we run the `fit3adequasy.RW` function.   
 
 ![adequate.DT](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.bm.png)
 
