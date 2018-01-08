@@ -100,7 +100,7 @@ mstep<-mle.GRW(element.length)[1]
 vstep<-mle.GRW(element.length)[2]
 
 # Run adequasy test for the directional trend model:
-fit3adequasy.trend(element.length, vstep=vstep)
+fit3adequasy.trend(element.length, mstep=mstep, vstep=vstep)
 
 $info
                    Value
