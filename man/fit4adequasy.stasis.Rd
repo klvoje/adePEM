@@ -70,7 +70,7 @@ fit4adequasy.stasis(x,theta,omega)
 Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 }
 \seealso{
-\code{\link{fit3adequasy.BM}}, \code{\link{fit3adequasy.trend}}
+\code{\link{fit3adequasy.RW}}, \code{\link{fit3adequasy.trend}}
 }
 \author{
 Kjetil L. Voje

@@ -75,7 +75,7 @@ auto.corr.test.stasis(x,theta,omega)
 Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 }
 \seealso{
-\code{\link{fit4adequasy.stasis}}, \code{\link{auto.corr.test.BM}}, \code{\link{auto.corr.test.DT}}
+\code{\link{fit4adequasy.stasis}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.trend}}
 }
 \author{
 Kjetil L. Voje
