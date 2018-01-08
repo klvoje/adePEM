@@ -26,6 +26,7 @@ devtools::install_github("klvoje/adePEM")
 
 The package depends on the `paleoTS` and `pracma` libraries, which should load automatically when installing `adePEM` from github.
 
+
 ## Example
 
 We are interested in analyzing the evolution of element length (measured in mm) in the conodont Pterospathodus. The data is available as part of the `adePEM` package and was originally published by Jones (2009). The data (`element.length`) is already a `paleoTS` object. We first plot the data. 
@@ -119,6 +120,17 @@ The directional trend model fails both the autocorrelation test and the runs tes
 
 Functions for running each test alone are provided in the package (e.g. `auto.corr.test.stasis`, `runs.test.RW`, `slope.test.trend`). The wrapper function for investigating the adequasy for the stasis model is `fit4adequasy.stasis`. One of the tests run by this function is only implemented for stasis (test of to large levers of net evolution), as low amounts of net evolution is part of the verbal definition of stasis, but not for random walk and directional trend.
 
+
 ## Author
 
 Kjetil L. Voje <k.l.voje@gmail.com>
+
+
+## References
+
+Hunt, G. 2006. Fitting and Comparing Models of Phyletic Evolution: Random Walks and beyond. Paleobiology 32:578–601. 
+
+Jones, D. 2009. Directional evolution in the conodont Pterospathodus. Paleobiology 35: 413-431.
+
+Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist [in press].
+
