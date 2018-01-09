@@ -19,7 +19,6 @@ Install the package from github using devtools:
 
 ```
 install.packages("devtools")
-library("devtools")
 
 devtools::install_github("klvoje/adePEM")
 ```
