@@ -9,7 +9,7 @@
 #'
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
-#' aurocorrelation is calculated directly on the sample means if the evaluated model is stasis.
+#' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
 #' If a different model is evaluated (random walk or directional trend), the data is
 #' detrended prior to the calculation of autocorrelation.
 #' @export

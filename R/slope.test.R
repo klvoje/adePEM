@@ -1,4 +1,4 @@
-#' @title Estimating the linear time-dependancy of the trait variance
+#' @title Estimating the linear time-dependency of the trait variance
 #'
 #' @description This function estimates the linear dependency of the trait variance on time.
 #' This function is used by other functions and will generally not be used directly by users.

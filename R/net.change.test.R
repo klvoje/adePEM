@@ -9,7 +9,7 @@
 #' @param model the model being evaluated
 #'
 #' @details This function calculates the net evolution in a vector of sample means
-#' defined as the the absolute difference in trait value between the first and last
+#' defined as the absolute difference in trait value between the first and last
 #' sample mean in the time series.
 #' @export
 #' @return net evolution

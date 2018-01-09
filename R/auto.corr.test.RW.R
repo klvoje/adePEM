@@ -5,14 +5,14 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param vstep the variance of the step distribution estmated from the observed data.
+#' @param vstep the variance of the step distribution estimated from the observed data.
 #'
-#' @param nrep number of iterations in the parametric boostrap (number of simulated time series); default is 1000.
+#' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
 #' Number must be between 0 and 1. A higher number means less strict judgment of whether a model is adequate; default
 #' is 0.95. Tests are two-tailed (except for the net evolution test), which means a model is judged adequate if the observed test statistic is within the 2.5
-#' percent of the extreeme values of the calculated test statistics on the simulated data given the default confidence
+#' percent of the extreme values of the calculated test statistics on the simulated data given the default confidence
 #' value of 0.95.
 #'
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
@@ -24,7 +24,7 @@
 #'
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
-#' aurocorrelation is calculated directly on the sample means if the evaluated model is stasis.
+#' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
 #' If a different model is evaluated (random walk or directional trend), the data is
 #' detrended prior to the calculation of autocorrelation.
 #'
@@ -38,11 +38,11 @@
 #'  \item{max.sim}{The largest test statistic calculated on the simulated data.}
 #'  \item{p-value}{Not a real p-value, but is calculated as the fraction of simulated test statistics
 #'  that is larger (or smaller) than the calculated test statistic on the observed data divided by 0.5.
-#'  A value of 1 means 50 percent of the test statistics on the simulated data are largen and smaller
+#'  A value of 1 means 50 percent of the test statistics on the simulated data are larger and smaller
 #'  than the calculated statistic on the observed data. A value of 0.10 means 90 percent of the test
 #'  statistics on the simulated data are larger or smaller than the test statistic on the observed time
 #'  series.}
-#'  \item{result}{Whether the model PASSED or FAILED the adequasy test. The outcome depends on the
+#'  \item{result}{Whether the model PASSED or FAILED the adequacy test. The outcome depends on the
 #'  confidence level.}
 #'
 #'@author Kjetil L. Voje
@@ -76,7 +76,7 @@ auto.corr.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.repl
 
   ### Parametric bootstrap routine ###
 
-  #Matrix that will contain the test statistic for each simluated data set (time series)
+  #Matrix that will contain the test statistic for each simuluated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
 
@@ -102,13 +102,13 @@ auto.corr.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.repl
     plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
   }
 
-  #Prepearing the outout
+  #Preparing the output
   output<-as.data.frame(cbind(round(obs.auto.corr,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.auto.corr/0.5, pass.auto.corr.test), nrow=5, byrow=TRUE)
   rownames(output)<-"auto.corr"
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim", "p-value", "Result")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim", "p-value", "result")
 
   summary.out<-as.data.frame(c(nrep, conf))
-  rownames(summary.out)<-c("replications", "confidense level")
+  rownames(summary.out)<-c("replications", "confidence level")
   colnames(summary.out)<-("Value")
   if (save.replicates==FALSE)
     {
