@@ -56,7 +56,7 @@ Let's investigate if the random walk represents an adequate statistical descript
 Before we run the adequacy tests, we need to estimate the step variance of the random walk model from the real data. This is done using the `mle.URW` function from the `PaleoTS` package. The estimated step variance is used to simulate a large number of time series where the trait evolves according to a random walk. Test statistics calculated on these simulated data will then be compared to the test statistics calculated on the real data.  
 ```
 # Estimate the vstep parameter from the data:
-vstep<-mle.URW(element.length)[1]
+vstep<-opt.joint.URW(element.length)$parameters[2]
 
 # Run adequacy test for the random walk model:
 fit3adequacy.RW(element.length, vstep=vstep)
@@ -96,8 +96,8 @@ If we take a look at the plot of how the trait changes over 6 million years, it 
 Again, the first thing we need to do is to estimate the model parameters for the real data. The directional change model has two parameters: the `mstep` is the mean of the step distribution while the `vstep` is the variance of the step distribution. We estimate these using the `mle.GRW` function in the paleoTS package. We then run the wrapper function to run all three adequacy tests simultaneously.
 ```
 # Estimate the mstep and vstep parameter from the data:
-mstep<-mle.GRW(element.length)[1]
-vstep<-mle.GRW(element.length)[2]
+mstep<-opt.joint.GRW(element.length)$parameters[2]
+vstep<-opt.joint.GRW(element.length)$parameters[3]
 
 # Run adequacy test for the directional trend model:
 fit3adequacy.trend(element.length, mstep=mstep, vstep=vstep)
