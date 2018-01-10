@@ -86,7 +86,7 @@ The sixth column indicates whether our model passed the adequacy tests. Since we
 
 That the random walk model passed all tests can also be seen in the visual representation of the distributions of test statistics, where the test statistics computed for the real data is indicated with a broken (red) line. These plots are generated automatically if `plot = TRUE` (which is the default setting) when we run the `fit3adequacy.RW` function.   
 
-![RW distributions](https://github.com/klvoje/adePEM/blob/master/extra/adequasy.bm.png)
+![RW distributions](https://github.com/klvoje/adePEM/blob/master/extra/adequacy.bm.png)
 
 
 To summarize: Among the three candidate models stasis, random walk and directional change, random walk has the best relative model fit to the data based on AICc. However, a relative better fit for a model (in this case, the random walk model) to a phyletic fossil time series is no guarantee that the model represents a sufficiently good statistical explanation for the trait dynamics observed in the data. We therefore assessed to what extent the random walk model also fitted the data in an absolute sense by running adequacy models. The random walk model passed all adequacy tests, which suggest the random walk model represents an adequate statistical description of the phyletic time series.
