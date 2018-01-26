@@ -2,7 +2,7 @@
 % Please edit documentation in R/slope.test.R
 \name{slope.test}
 \alias{slope.test}
-\title{Estimating the linear time-dependancy of the trait variance}
+\title{Estimating the linear time-dependency of the trait variance}
 \usage{
 slope.test(x, time, model, theta = NULL)
 }

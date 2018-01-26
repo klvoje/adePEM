@@ -58,7 +58,7 @@ Before we run the adequacy tests, we need to estimate the step variance of the r
 # Estimate the vstep parameter from the data:
 vstep<-opt.joint.URW(element.length)$parameters[2]
 
-# Run adequacy test for the random walk model:
+# Run adequacy tests for the random walk model:
 fit3adequacy.RW(element.length, vstep=vstep)
 
 
@@ -99,7 +99,7 @@ Again, the first thing we need to do is to estimate the model parameters for the
 mstep<-opt.joint.GRW(element.length)$parameters[2]
 vstep<-opt.joint.GRW(element.length)$parameters[3]
 
-# Run adequacy test for the directional trend model:
+# Run adequacy tests for the directional trend model:
 fit3adequacy.trend(element.length, mstep=mstep, vstep=vstep)
 
 $info

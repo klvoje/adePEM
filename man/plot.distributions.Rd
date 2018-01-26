@@ -47,7 +47,7 @@ plot.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.
 
 }
 \seealso{
-\code{\link{fit3adequasy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
+\code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
 }
 \author{
 Kjetil L. Voje

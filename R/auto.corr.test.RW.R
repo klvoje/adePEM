@@ -49,7 +49,7 @@
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
@@ -58,7 +58,7 @@
 #'## estimate the variance of the step distribution
 #'vstep <- mle.URW(x)[1]
 #'
-#'## investigate if the time series pass the adequasy test
+#'## investigate if the time series pass the adequacy test
 #'auto.corr.test.RW(x,vstep)
 #'
 

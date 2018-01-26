@@ -21,7 +21,7 @@
 #'
 #'@author Kjetil L. Voje
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend

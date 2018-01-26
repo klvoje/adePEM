@@ -17,9 +17,8 @@ runs.test(x, model, theta = NULL)
 net evolution
 }
 \description{
-This function calculates the number of runs of succesive positive or
-negative deviations from the theta (if model = stasis) or the mean of the normal distribution
-of the data.
+This function calculates the number of runs of successive positive or
+negative deviations from theta (if model = stasis) or the mean of the data.
 This function is used by other functions and will generally not be used directly by users.
 }
 \details{

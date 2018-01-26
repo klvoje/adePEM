@@ -44,14 +44,14 @@
 #'  than the calculated statistic on the observed data. A value of 0.10 means 90 percent of the test
 #'  statistics on the simulated data are larger or smaller than the test statistic on the observed time
 #'  series.}
-#'  \item{result}{Whether the model PASSED or FAILED the adequasy test. The outcome depends on the
+#'  \item{result}{Whether the model PASSED or FAILED the adequacy test. The outcome depends on the
 #'  confidence level.}
 #'
 #'@author Kjetil L. Voje
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend

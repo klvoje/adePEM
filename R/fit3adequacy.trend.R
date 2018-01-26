@@ -1,9 +1,11 @@
-#' @title Applying 3 adequacy tests to the Random walk model
+#' @title Applying 3 adequacy tests to the Directional trend model
 #'
-#' @description Investigating if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigating if the Directional trend model is an adequate statistical description of an evolutionary
 #' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
 #'
 #' @param y a paleoTS object
+#'
+#' @param mstep the mean of the step distribution estimated from the observed data.
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -37,27 +39,30 @@
 #'  than the calculated statistic on the observed data. A value of 0.10 means 90 percent of the test
 #'  statistics on the simulated data are larger or smaller than the test statistic on the observed time
 #'  series.}
-#'  \item{result}{Whether the model PASSED or FAILED the adequasy test. The outcome depends on the
+#'  \item{result}{Whether the model PASSED or FAILED the adequacy test. The outcome depends on the
 #'  confidence level.}
 #'
 #'@author Kjetil L. Voje
 #'
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{fit4adequasy.stasis}}
+#'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{fit4adequacy.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating random walk
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
+#'## generate a paleoTS objects by simulating a directional trend
+#'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
+#'
+#'## estimate the mean of the step distribution
+#'mstep <- mle.GRW(x)[1]
 #'
 #'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
+#'vstep <- mle.GRW(x)[2]
 #'
 #'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequasy.RW(x,vstep)
+#'fit3adequacy.trend(x,mstep,vstep)
 #'
 
-fit3adequasy.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -68,34 +73,31 @@ fit3adequasy.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="RW")
-  obs.runs.test<-runs.test(x, model="RW")
-  obs.slope.test<-slope.test(x,time, model="RW")
+  obs.auto.corr<-auto.corr(x, model="trend")
+  obs.runs.test<-runs.test(x, model="trend")
+  obs.slope.test<-slope.test(x,time, model="trend")
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.RW(y,vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.RW(y,vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.RW(y,vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.runs<-runs.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.slope<-slope.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
 
   #Preparing the output
-    output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
+  output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
+            as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
+            as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
 
-  output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
-                              c(output[c(3,8,13)]), c(output[c(4,9,14)]),
-                              c(output[c(5,10,15)])), ncol=5)
+  output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]), c(output[c(3,8,13)]), c(output[c(4,9,14)]), c(output[c(5,10,15)])), ncol=5)
 
   rownames(output)<-c("auto.corr", "runs.test", "slope.test")
   colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "result")
 
   if (plot==TRUE) {
-    par(mfrow=c(1,3))
+    par(mfrow=c(1,3));
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plot.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plot.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
     plot.distributions(out.slope$replicates,obs.slope.test, model.names[3], xlab="Simulated data", main="Fixed variance");
-
   }
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")
