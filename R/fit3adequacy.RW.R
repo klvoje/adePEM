@@ -16,8 +16,8 @@
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
-#' 
-#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+#'
+#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set
 #' by the user (usually not recommended).
 #'
 #' @details A wrapper function for investigating adequacy of the directional trend model
@@ -61,7 +61,7 @@ fit3adequacy.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, vstep=NULL){
   v<-y$vv
   n<-y$nn
   time<-y$tt
-  
+
   if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
 
   lower<-(1-conf)/2
@@ -73,14 +73,14 @@ fit3adequacy.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, vstep=NULL){
   obs.slope.test<-slope.test(x, time, model="RW")
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.RW(y, nrep, conf, plot=FALSE, vstep)
-    out.runs<-runs.test.RW(y,nrep, conf, plot=FALSE, vstep)
-    out.slope<-slope.test.RW(y,nrep, conf, plot=FALSE, vstep)
+    out.auto<-auto.corr.test.RW(y, nrep, conf, plot=FALSE, save.replicates = TRUE, vstep)
+    out.runs<-runs.test.RW(y,nrep, conf, plot=FALSE, save.replicates = TRUE, vstep)
+    out.slope<-slope.test.RW(y,nrep, conf, plot=FALSE, save.replicates = TRUE, vstep)
 
   #Preparing the output
-    output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
+output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
+          as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
+          as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
 
   output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
                               c(output[c(3,8,13)]), c(output[c(4,9,14)]),
