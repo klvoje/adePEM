@@ -4,15 +4,11 @@
 \alias{fit4adequacy.stasis}
 \title{Applying 4 adequacy tests to the stasis model}
 \usage{
-fit4adequacy.stasis(y, theta, omega, nrep = 1000, conf = 0.95,
-  plot = TRUE)
+fit4adequacy.stasis(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  omega = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{theta}{evolutionary optimum estimated from the observed data.}
-
-\item{omega}{evolutonary variance estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -25,6 +21,9 @@ value of 0.95.}
 \item{plot}{logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 time series is plotted on the distribution of test statistics calculated on the simulated time series;
 default is TRUE.}
+
+\item{omega}{evolutonary variance estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -53,17 +52,11 @@ A wrapper function for investigating adequacy of the directional trend model
 applying all three tests at the same time.
 }
 \examples{
-## generate a paleoTS objects by simulating a stasis time series
+## Generate a paleoTS objects by simulating a stasis time series
 x <- sim.Stasis(ns = 40, theta = 0, omega = 0.1)
 
-## estimate the evolutionary optimum
-theta <- mle.Stasis(x)[1]
-
-## estimate the evolutionary variance
-omega <- mle.Stasis(x)[2]
-
-## Investigate if the time series pass all four adequacy tests
-fit4adequacy.stasis(x,theta,omega)
+## Investigate if the stasis model is an adequate description of the data
+fit4adequacy.stasis(x)
 
 }
 \references{

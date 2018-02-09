@@ -5,8 +5,6 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -18,6 +16,9 @@
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
+#' 
+#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details A wrapper function for investigating adequacy of the directional trend model
 #' applying all three tests at the same time.
@@ -50,19 +51,18 @@
 #'## generate a paleoTS objects by simulating random walk
 #'x <- sim.GRW(ns=40, ms=0, vs=0.1)
 #'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
-#'
-#'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequacy.RW(x,vstep)
+#'## Investigate if the random walk model is an adequate description of the data
+#'fit3adequacy.RW(x)
 #'
 
-fit3adequacy.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, vstep=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
@@ -70,12 +70,12 @@ fit3adequacy.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE){
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="RW")
   obs.runs.test<-runs.test(x, model="RW")
-  obs.slope.test<-slope.test(x,time, model="RW")
+  obs.slope.test<-slope.test(x, time, model="RW")
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.RW(y,vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.RW(y,vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.RW(y,vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.RW(y, nrep, conf, plot=FALSE, vstep)
+    out.runs<-runs.test.RW(y,nrep, conf, plot=FALSE, vstep)
+    out.slope<-slope.test.RW(y,nrep, conf, plot=FALSE, vstep)
 
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

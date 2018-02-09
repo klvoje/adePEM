@@ -5,8 +5,6 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -21,6 +19,9 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
 #' as a function of time.as a function of time.
@@ -51,26 +52,25 @@
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
 #'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
-#'
+
 #'## investigate if the time series pass the adequacy test
-#'slope.test.RW(x,vstep)
+#'slope.test.RW(x)
 #'
 
 
-slope.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, vstep=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x,time, model="RW")
+  obs.slope.test<-slope.test(x, time, model="RW")
 
   ### Parametric bootstrap routine ###
 
@@ -82,7 +82,7 @@ slope.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicat
 
     x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="RW")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm, time, model="RW")
 
   }
 

@@ -6,10 +6,6 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param theta evolutionary optimum estimated from the observed data.
-#'
-#' @param omega evolutonary variance estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -21,6 +17,9 @@
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
+#' 
+#' @param omega evolutonary variance estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details A wrapper function for investigating adequacy of the directional trend model
 #' applying all three tests at the same time.
@@ -50,24 +49,21 @@
 #'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{fit3adequacy.trend}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a stasis time series
+#'## Generate a paleoTS objects by simulating a stasis time series
 #'x <- sim.Stasis(ns = 40, theta = 0, omega = 0.1)
 #'
-#'## estimate the evolutionary optimum
-#'theta <- mle.Stasis(x)[1]
+#'## Investigate if the stasis model is an adequate description of the data
+#'fit4adequacy.stasis(x)
 #'
-#'## estimate the evolutionary variance
-#'omega <- mle.Stasis(x)[2]
-#'
-#'## Investigate if the time series pass all four adequacy tests
-#'fit4adequacy.stasis(x,theta,omega)
-#'
-fit4adequacy.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE){
+fit4adequacy.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, omega=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  theta<-opt.joint.Stasis(y)$parameters[1]
+  if (is.null(omega)) omega<-opt.joint.Stasis(y)$parameters[2]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
@@ -80,10 +76,10 @@ fit4adequacy.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE){
   obs.net.change.test<-net.change.test(x, model="stasis")
 
   #Run parametric bootstrap
-  out.auto<-auto.corr.test.stasis(y,theta,omega, nrep, conf, plot=FALSE)
-  out.runs<-runs.test.stasis(y,theta,omega, nrep, conf, plot=FALSE)
-  out.slope<-slope.test.stasis(y,theta,omega, nrep, conf, plot=FALSE)
-  out.net<-net.change.test.stasis(y,theta,omega, nrep, conf, plot=FALSE)
+  out.auto<-auto.corr.test.stasis(y, nrep, conf, plot=FALSE, theta, omega)
+  out.runs<-runs.test.stasis(y, nrep, conf, plot=FALSE, theta, omega)
+  out.slope<-slope.test.stasis(y, nrep, conf, plot=FALSE, theta, omega)
+  out.net<-net.change.test.stasis(y, nrep, conf, plot=FALSE, theta, omega)
 
   #Preparing the output
   output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

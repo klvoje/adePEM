@@ -19,7 +19,7 @@
 #'
 
 
-auto.corr <- function(x, model){
+auto.corr <- function(x, model, anc=NULL, mstep=NULL){
   if (model=="RW")
     {
     x<-x-x[1]
@@ -28,7 +28,7 @@ auto.corr <- function(x, model){
   }
   if (model=="trend")
     {
-    x<-detrend(x)
+    x<-x-(anc+mstep*time)
   }
   return(cor(x[1:length(x)-1],x[2:length(x)]))
 }

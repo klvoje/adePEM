@@ -1,14 +1,10 @@
-#' @title Applying the runs test to the Directional trend model
+#' @title Applying the runs test to the trend model
 #'
-#' @description Investigates if the Directional trend model is an adequate statistical description of an evolutionary
+#' @description Investigates if the trend model is an adequate statistical description of an evolutionary
 #' time series by applying the runs test.
 #'
 #' @param y a paleoTS object
-#'
-#' @param mstep the mean of the step distribution estimated from the observed data.
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
+#' 
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -23,8 +19,17 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param mstep the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
-#' @details This function applies a runs test in order to investigate if the Directional trend model can be judged an
+#' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
+#' 
+#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
+#'
+#' @details This function applies a runs test in order to investigate if the trend model can be judged an
 #' adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
 #' from the average in the same direction and the runs test is applied to the sign of the residuals (i.e. θ – trait value)
 #' to identify series that have non-random patterns in the sign of deviations. For a time series of length n,
@@ -57,30 +62,28 @@
 #'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.RW}}, \code{\link{fit3adequacy.trend}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
+#'## generate a paleoTS objects by simulating a trend
 #'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
-#'
-#'## estimate the mean of the step distribution
-#'mstep <- mle.GRW(x)[1]
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
-#'
+
 #'## investigate if the time series pass the adequacy test
-#'runs.test.trend(x,mstep,vstep)
+#'runs.test.trend(x)
 #'
 
-runs.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+runs.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
 
+  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
+  if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.runs.test<-runs.test(x, model="trend")
+  obs.runs.test<-runs.test(x, model="trend",  theta=NULL, anc, mstep)
 
   ### Parametric bootstrap routine ###
 
@@ -92,7 +95,7 @@ runs.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save
 
     x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="trend")
+    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="trend", theta=NULL, anc, mstep)
 
   }
 

@@ -4,7 +4,7 @@
 \alias{runs.test}
 \title{Calculating the number of runs}
 \usage{
-runs.test(x, model, theta = NULL)
+runs.test(x, model, theta = NULL, anc = NULL, mstep = NULL)
 }
 \arguments{
 \item{x}{vector of sample means}

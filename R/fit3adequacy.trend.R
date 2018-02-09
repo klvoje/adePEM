@@ -1,13 +1,9 @@
-#' @title Applying 3 adequacy tests to the Directional trend model
+#' @title Applying 3 adequacy tests to the trend model
 #'
-#' @description Investigating if the Directional trend model is an adequate statistical description of an evolutionary
+#' @description Investigating if the trend model is an adequate statistical description of an evolutionary
 #' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
 #'
 #' @param y a paleoTS object
-#'
-#' @param mstep the mean of the step distribution estimated from the observed data.
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
 #'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
@@ -20,10 +16,17 @@
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
+#' 
+#' @param mstep the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
-#' @details A wrapper function for investigating adequacy of the directional trend model
-#' applying all three tests at the same time.
+#' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
+#' 
+#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
+#' @details A wrapper function for investigating adequacy of the trend model applying all three tests at the same time.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -49,38 +52,36 @@
 #'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{fit4adequacy.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
+#'## generate a paleoTS objects by simulating a trend
 #'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
 #'
-#'## estimate the mean of the step distribution
-#'mstep <- mle.GRW(x)[1]
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
-#'
-#'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequacy.trend(x,mstep,vstep)
+#'## Investigate if the trend model is an adequate description of the data
+#'fit3adequacy.trend(x)
 #'
 
-fit3adequacy.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
+  if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="trend")
-  obs.runs.test<-runs.test(x, model="trend")
-  obs.slope.test<-slope.test(x,time, model="trend")
+  obs.auto.corr<-auto.corr(x, model="trend", anc, mstep)
+  obs.runs.test<-runs.test(x, model="trend", theta=NULL, anc, mstep)
+  obs.slope.test<-slope.test(x,time, model="trend", theta=NULL, anc, mstep)
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.trend(y, mstep, vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
+    out.runs<-runs.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
+    out.slope<-slope.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
 
   #Preparing the output
   output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

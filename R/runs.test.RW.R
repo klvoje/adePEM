@@ -5,8 +5,6 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -21,6 +19,9 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details This function applies a runs test in order to investigate if the random walk model can be judged an
 #' adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
@@ -57,21 +58,20 @@
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
 #'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
-#'
+
 #'## investigate if the time series pass the adequacy test
-#'runs.test.RW(x,vstep)
+#'runs.test.RW(x)
 #'
 
-runs.test.RW<-function(y, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+runs.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, vstep=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
 
+  if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 

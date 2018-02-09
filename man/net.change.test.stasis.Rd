@@ -4,15 +4,11 @@
 \alias{net.change.test.stasis}
 \title{Applying the net evolution test to the stasis model}
 \usage{
-net.change.test.stasis(y, theta, omega, nrep = 1000, conf = 0.95,
-  plot = TRUE, save.replicates = TRUE)
+net.change.test.stasis(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  save.replicates = TRUE, omega = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{theta}{evolutionary optimum estimated from the observed data.}
-
-\item{omega}{evolutionary variance estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -28,6 +24,9 @@ default is TRUE.}
 
 \item{save.replicates}{logical; if TRUE, the values of the test statistic calculated on the simulated time
 series is saved and can be accessed later for plotting purposes; default is TRUE.}
+
+\item{omega}{evolutonary variance estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 Net evolution
@@ -55,15 +54,8 @@ To evolve zero or only a small amount of net evolution is an essential part of t
 \examples{
 ## generate a paleoTS objects by simulating a stasis time series
 x <- sim.Stasis(ns = 40, theta = 0, omega = 0.1)
-
-## estimate the evolutionary optimum
-theta <- mle.Stasis(x)[1]
-
-## estimate the evolutionary variance
-omega <- mle.Stasis(x)[2]
-
 ## investigate if the time series pass the adequacy test
-net.change.test.stasis(x,theta,omega)
+net.change.test.stasis(x)
 
 }
 \references{

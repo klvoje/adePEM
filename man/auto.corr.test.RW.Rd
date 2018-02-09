@@ -4,13 +4,11 @@
 \alias{auto.corr.test.RW}
 \title{Applying the autocorrelation test to the Random walk model}
 \usage{
-auto.corr.test.RW(y, vstep, nrep = 1000, conf = 0.95, plot = TRUE,
-  save.replicates = TRUE)
+auto.corr.test.RW(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  save.replicates = TRUE, vstep = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{vstep}{the variance of the step distribution estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -26,6 +24,9 @@ default is TRUE.}
 
 \item{save.replicates}{logical; if TRUE, the values of the test statistic calculated on the simulated time
 series is saved and can be accessed later for plotting purposes; default is TRUE.}
+
+\item{vstep}{the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric boostrap and the
@@ -59,11 +60,8 @@ detrended prior to the calculation of autocorrelation.
 ## generate a paleoTS objects by simulating a directional trend
 x <- sim.GRW(ns=40, ms=0, vs=0.1)
 
-## estimate the variance of the step distribution
-vstep <- mle.URW(x)[1]
-
 ## investigate if the time series pass the adequacy test
-auto.corr.test.RW(x,vstep)
+auto.corr.test.RW(x)
 
 }
 \references{

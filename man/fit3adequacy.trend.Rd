@@ -2,16 +2,13 @@
 % Please edit documentation in R/fit3adequacy.trend.R
 \name{fit3adequacy.trend}
 \alias{fit3adequacy.trend}
-\title{Applying 3 adequacy tests to the Directional trend model}
+\title{Applying 3 adequacy tests to the trend model}
 \usage{
-fit3adequacy.trend(y, mstep, vstep, nrep = 1000, conf = 0.95, plot = TRUE)
+fit3adequacy.trend(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  mstep = NULL, vstep = NULL, anc = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{mstep}{the mean of the step distribution estimated from the observed data.}
-
-\item{vstep}{the variance of the step distribution estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -24,6 +21,15 @@ value of 0.95.}
 \item{plot}{logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 time series is plotted on the distribution of test statistics calculated on the simulated time series;
 default is TRUE.}
+
+\item{mstep}{the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{vstep}{the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{anc}{the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -43,25 +49,18 @@ part of the output is a data frame with the adequacy tests as columns and the fo
  confidence level.}
 }
 \description{
-Investigating if the Directional trend model is an adequate statistical description of an evolutionary
+Investigating if the trend model is an adequate statistical description of an evolutionary
 time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
 }
 \details{
-A wrapper function for investigating adequacy of the directional trend model
-applying all three tests at the same time.
+A wrapper function for investigating adequacy of the trend model applying all three tests at the same time.
 }
 \examples{
-## generate a paleoTS objects by simulating a directional trend
+## generate a paleoTS objects by simulating a trend
 x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
 
-## estimate the mean of the step distribution
-mstep <- mle.GRW(x)[1]
-
-## estimate the variance of the step distribution
-vstep <- mle.GRW(x)[2]
-
-## Investigate if the time series pass all thee adequacy tests
-fit3adequacy.trend(x,mstep,vstep)
+## Investigate if the trend model is an adequate description of the data
+fit3adequacy.trend(x)
 
 }
 \references{

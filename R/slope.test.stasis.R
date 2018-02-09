@@ -5,10 +5,6 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param theta evolutionary optimum estimated from the observed data.
-#'
-#' @param omega evolutionary variance estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -23,6 +19,9 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param omega evolutonary variance estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details If model = stasis: the function estimates the slope of the least square regression of the size of deviations
 #' (their absolute value) from the optimal phenotype as a function of time.
@@ -54,25 +53,22 @@
 #'## generate a paleoTS objects by simulating a stasis time series
 #'x <- sim.Stasis(ns = 40, theta = 0, omega = 0.1)
 #'
-#'## estimate the evolutionary optimum
-#'theta <- mle.Stasis(x)[1]
-#'
-#'## estimate the evolutionary variance
-#'omega <- mle.Stasis(x)[2]
-#'
 #'## investigate if the time series pass the adequacy test
-#'slope.test.stasis(x,theta,omega)
+#'slope.test.stasis(x)
 #'
 
 
 
-slope.test.stasis<-function(y, theta, omega, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, omega=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
 
+  theta<-opt.joint.Stasis(y)$parameters[1]
+  if (is.null(omega)) omega<-opt.joint.Stasis(y)$parameters[2]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 

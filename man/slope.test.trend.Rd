@@ -2,17 +2,13 @@
 % Please edit documentation in R/slope.test.trend.R
 \name{slope.test.trend}
 \alias{slope.test.trend}
-\title{Applying the constant variance test to the directional trend model}
+\title{Applying the constant variance test to the trend model}
 \usage{
-slope.test.trend(y, mstep, vstep, nrep = 1000, conf = 0.95, plot = TRUE,
-  save.replicates = TRUE)
+slope.test.trend(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  save.replicates = TRUE, mstep = NULL, vstep = NULL, anc = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{mstep}{the mean of the step distribution estimated from the observed data.}
-
-\item{vstep}{the variance of the step distribution estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -28,6 +24,15 @@ default is TRUE.}
 
 \item{save.replicates}{logical; if TRUE, the values of the test statistic calculated on the simulated time
 series is saved and can be accessed later for plotting purposes; default is TRUE.}
+
+\item{mstep}{the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{vstep}{the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{anc}{the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -47,25 +52,18 @@ part of the output is:
  confidence level.}
 }
 \description{
-Investigates if the directional trend model is an adequate statistical description of an evolutionary
+Investigates if the trend model is an adequate statistical description of an evolutionary
 time series by applying the constant variance test.
 }
 \details{
 Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
-as a function of time.as a function of time.
+as a function of time.
 }
 \examples{
-## generate a paleoTS objects by simulating a directional trend
+## generate a paleoTS objects by simulating a trend
 x <- sim.GRW(ns=40, ms=0, vs=0.1)
-
-## estimate the mean of the step distribution
-mstep <- mle.GRW(x)[1]
-
-## estimate the variance of the step distribution
-vstep <- mle.GRW(x)[2]
-
 ## investigate if the time series pass the adequacy test
-slope.test.trend(x,vstep)
+slope.test.trend(x)
 
 }
 \references{

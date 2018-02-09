@@ -2,17 +2,13 @@
 % Please edit documentation in R/runs.test.trend.R
 \name{runs.test.trend}
 \alias{runs.test.trend}
-\title{Applying the runs test to the Directional trend model}
+\title{Applying the runs test to the trend model}
 \usage{
-runs.test.trend(y, mstep, vstep, nrep = 1000, conf = 0.95, plot = TRUE,
-  save.replicates = TRUE)
+runs.test.trend(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  save.replicates = TRUE, mstep = NULL, vstep = NULL, anc = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{mstep}{the mean of the step distribution estimated from the observed data.}
-
-\item{vstep}{the variance of the step distribution estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -28,6 +24,15 @@ default is TRUE.}
 
 \item{save.replicates}{logical; if TRUE, the values of the test statistic calculated on the simulated time
 series is saved and can be accessed later for plotting purposes; default is TRUE.}
+
+\item{mstep}{the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{vstep}{the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
+
+\item{anc}{the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -47,11 +52,11 @@ part of the output is:
  confidence level.}
 }
 \description{
-Investigates if the Directional trend model is an adequate statistical description of an evolutionary
+Investigates if the trend model is an adequate statistical description of an evolutionary
 time series by applying the runs test.
 }
 \details{
-This function applies a runs test in order to investigate if the Directional trend model can be judged an
+This function applies a runs test in order to investigate if the trend model can be judged an
 adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
 from the average in the same direction and the runs test is applied to the sign of the residuals (i.e. θ – trait value)
 to identify series that have non-random patterns in the sign of deviations. For a time series of length n,
@@ -61,17 +66,10 @@ above and below the optimum respectively. The mean and variance are used to calc
 implemented as the test statistic.
 }
 \examples{
-## generate a paleoTS objects by simulating a directional trend
+## generate a paleoTS objects by simulating a trend
 x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
-
-## estimate the mean of the step distribution
-mstep <- mle.GRW(x)[1]
-
-## estimate the variance of the step distribution
-vstep <- mle.GRW(x)[2]
-
 ## investigate if the time series pass the adequacy test
-runs.test.trend(x,mstep,vstep)
+runs.test.trend(x)
 
 }
 \references{

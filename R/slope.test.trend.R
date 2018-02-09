@@ -1,14 +1,10 @@
-#' @title Applying the constant variance test to the directional trend model
+#' @title Applying the constant variance test to the trend model
 #'
-#' @description Investigates if the directional trend model is an adequate statistical description of an evolutionary
+#' @description Investigates if the trend model is an adequate statistical description of an evolutionary
 #' time series by applying the constant variance test.
 #'
 #' @param y a paleoTS object
-#'
-#' @param mstep the mean of the step distribution estimated from the observed data.
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
+#' 
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -23,9 +19,18 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param mstep the mean of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
+#'
+#' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
+#' 
+#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
+#' by the user (usually not recommended).
 #'
 #' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
-#' as a function of time.as a function of time.
+#' as a function of time.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -51,30 +56,28 @@
 #'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.RW}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
+#'## generate a paleoTS objects by simulating a trend
 #'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the mean of the step distribution
-#'mstep <- mle.GRW(x)[1]
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.GRW(x)[2]
-#'
+
 #'## investigate if the time series pass the adequacy test
-#'slope.test.trend(x,vstep)
+#'slope.test.trend(x)
 #'
 
-slope.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.trend<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
-
+  
+  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
+  if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x,time, model="trend")
+  obs.slope.test<-slope.test(x, time, model="trend", theta=NULL, anc, mstep)
 
   ### Parametric bootstrap routine ###
 
@@ -86,7 +89,7 @@ slope.test.trend<-function(y, mstep, vstep, nrep=1000, conf=0.95, plot=TRUE, sav
 
     x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="trend")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm,time, model="trend", theta=NULL, anc, mstep)
 
   }
 

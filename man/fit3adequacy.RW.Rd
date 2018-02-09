@@ -4,12 +4,10 @@
 \alias{fit3adequacy.RW}
 \title{Applying 3 adequacy tests to the Random walk model}
 \usage{
-fit3adequacy.RW(y, vstep, nrep = 1000, conf = 0.95, plot = TRUE)
+fit3adequacy.RW(y, nrep = 1000, conf = 0.95, plot = TRUE, vstep = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
-
-\item{vstep}{the variance of the step distribution estimated from the observed data.}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -22,6 +20,9 @@ value of 0.95.}
 \item{plot}{logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 time series is plotted on the distribution of test statistics calculated on the simulated time series;
 default is TRUE.}
+
+\item{vstep}{the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+by the user (usually not recommended).}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -52,11 +53,8 @@ applying all three tests at the same time.
 ## generate a paleoTS objects by simulating random walk
 x <- sim.GRW(ns=40, ms=0, vs=0.1)
 
-## estimate the variance of the step distribution
-vstep <- mle.URW(x)[1]
-
-## Investigate if the time series pass all thee adequacy tests
-fit3adequacy.RW(x,vstep)
+## Investigate if the random walk model is an adequate description of the data
+fit3adequacy.RW(x)
 
 }
 \references{
