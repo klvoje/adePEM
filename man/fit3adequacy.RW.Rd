@@ -21,7 +21,7 @@ value of 0.95.}
 time series is plotted on the distribution of test statistics calculated on the simulated time series;
 default is TRUE.}
 
-\item{vstep}{the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
+\item{vstep}{the variance of the step distribution. This parameter is automatically estimated from the data, if not set
 by the user (usually not recommended).}
 }
 \value{
