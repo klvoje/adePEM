@@ -22,7 +22,7 @@
 #'@author Kjetil L. Voje
 #'
 #'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
-#' @export
+#'@export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
 #'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
