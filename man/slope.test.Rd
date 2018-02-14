@@ -4,14 +4,14 @@
 \alias{slope.test}
 \title{Estimating the linear time-dependency of the trait variance}
 \usage{
-slope.test(x, time, model, theta = NULL, anc = NULL, mstep = NULL)
+slope.test(x, model, tt, theta = NULL, anc = NULL, mstep = NULL)
 }
 \arguments{
 \item{x}{vector of sample means}
 
-\item{time}{vector of sample ages}
-
 \item{model}{the model being evaluated}
+
+\item{tt}{vector of sample ages}
 
 \item{theta}{if the tested model is stasis, theta is the estimated theta from the data.}
 }

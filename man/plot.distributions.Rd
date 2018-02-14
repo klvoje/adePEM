@@ -4,7 +4,7 @@
 \alias{plot.distributions}
 \title{Plotting the observed test statistic on the distribution of the test statistic calculated on simulated data}
 \usage{
-plot.distributions(sim.data, obs, test, xlab, main)
+\method{plot}{distributions}(sim.data, obs, test, xlab, main)
 }
 \arguments{
 \item{sim.data}{vector containing test statistics calculated from the simulated data}

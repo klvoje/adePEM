@@ -4,7 +4,7 @@
 \alias{auto.corr}
 \title{Calculating autocorrelation}
 \usage{
-auto.corr(x, model, anc = NULL, mstep = NULL)
+auto.corr(x, model, tt = NULL, anc = NULL, mstep = NULL)
 }
 \arguments{
 \item{x}{vector of sample means}
