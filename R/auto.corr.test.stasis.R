@@ -65,7 +65,8 @@ auto.corr.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replica
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
@@ -83,7 +84,7 @@ auto.corr.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replica
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = time)
+    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = tt)
 
     bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="stasis")
 

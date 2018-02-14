@@ -61,7 +61,7 @@ net.change.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replic
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
 
   theta<-opt.joint.Stasis(y)$parameters[1]
   if (is.null(omega)) omega<-opt.joint.Stasis(y)$parameters[2]
@@ -80,7 +80,7 @@ net.change.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replic
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = time)
+    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = tt)
 
     bootstrap.matrix[i,1]<-net.change.test(x.sim$mm, model="stasis")
 

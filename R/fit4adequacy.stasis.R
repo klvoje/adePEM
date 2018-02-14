@@ -60,7 +60,7 @@ fit4adequacy.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, omega=NULL){
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
   
   theta<-opt.joint.Stasis(y)$parameters[1]
   if (is.null(omega)) omega<-opt.joint.Stasis(y)$parameters[2]
@@ -72,7 +72,7 @@ fit4adequacy.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, omega=NULL){
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="stasis")
   obs.runs.test<-runs.test(x, model="stasis", theta=theta)
-  obs.slope.test<-slope.test(x,time, model="stasis", theta=theta)
+  obs.slope.test<-slope.test(x,tt, model="stasis", theta=theta)
   obs.net.change.test<-net.change.test(x, model="stasis")
 
   #Run parametric bootstrap

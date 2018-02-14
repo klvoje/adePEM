@@ -5,7 +5,7 @@
 #'
 #' @param x vector of sample means
 #'
-#' @param time vector of sample ages
+#' @param tt vector of sample ages
 #'
 #' @param model the model being evaluated
 #'
@@ -19,25 +19,25 @@
 #' @return least-square slope estimate
 #'
 
-slope.test <- function(x, time, model, theta=NULL, anc=NULL, mstep=NULL){
+slope.test <- function(x, model, tt, theta=NULL, anc=NULL, mstep=NULL){
   if (model=="RW")
   {
     x<-x-x[1]
     x<-diff(x,1)
-    time<-time[-(length(time))]
-    slope.est<-(lm((abs(x))~time)$coeff[2])
+    tt<-tt[-(length(tt))]
+    slope.est<-(lm((abs(x))~tt)$coeff[2])
   }
 
   if (model =="trend")
   {
-    x<-x-(anc+mstep*time)
-    slope.est<-(lm((abs(x))~time)$coeff[2])
+    x<-x-(anc+mstep*tt)
+    slope.est<-(lm((abs(x))~tt)$coeff[2])
   }
 
    if (model =="stasis")
   {
     resid_stasis<-abs(x-theta)
-    slope.est<-lm(resid_stasis~time)$coeff[2]
+    slope.est<-lm(resid_stasis~tt)$coeff[2]
   }
 
   return(slope.est)

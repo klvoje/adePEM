@@ -68,7 +68,7 @@ runs.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
 
   theta<-opt.joint.Stasis(y)$parameters[1]
   if (is.null(omega)) omega<-opt.joint.Stasis(y)$parameters[2]
@@ -76,7 +76,7 @@ runs.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   lower<-(1-conf)/2
   upper<-(1+conf)/2
   
-  obs.runs.test<-runs.test(x, model="stasis", theta)
+  obs.runs.test<-runs.test(x, model="stasis", tt, theta)
 
   ### Parametric bootstrap routine ###
 
@@ -86,9 +86,9 @@ runs.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = time)
+    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = tt)
 
-    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="stasis", theta=theta)
+    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="stasis", tt, theta=theta)
 
   }
 

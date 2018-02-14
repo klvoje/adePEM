@@ -72,7 +72,7 @@ auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicat
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
 
   if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
   if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
@@ -81,7 +81,7 @@ auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicat
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="trend", anc, mstep)
+  obs.auto.corr<-auto.corr(x, model="trend", tt, anc, mstep)
 
   ### Parametric bootstrap routine ###
 
@@ -92,9 +92,9 @@ auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicat
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=tt)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="trend", anc, mstep)
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="trend", tt, anc, mstep)
 
   }
 

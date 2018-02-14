@@ -21,7 +21,7 @@
 
 
 
-runs.test <- function(x, model, theta=NULL, anc=NULL, mstep=NULL){
+runs.test <- function(x, model, tt=NULL, theta=NULL, anc=NULL, mstep=NULL){
   if (model=="RW")
   {
     x<-x-x[1]
@@ -35,7 +35,7 @@ runs.test <- function(x, model, theta=NULL, anc=NULL, mstep=NULL){
   }
   if (model=="trend")
   {
-    x<-x-(anc+mstep*time)
+    x<-x-(anc+mstep*tt)
     
     mu = 2*(sum(x>mean(x))*sum(x<mean(x)))/length(x) +1;
     # with variance

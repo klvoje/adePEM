@@ -64,7 +64,7 @@ fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vst
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
   
   if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
   if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
@@ -74,9 +74,9 @@ fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vst
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="trend", anc, mstep)
-  obs.runs.test<-runs.test(x, model="trend", theta=NULL, anc, mstep)
-  obs.slope.test<-slope.test(x,time, model="trend", theta=NULL, anc, mstep)
+  obs.auto.corr<-auto.corr(x, model="trend", tt, anc, mstep)
+  obs.runs.test<-runs.test(x, model="trend", tt, theta=NULL, anc, mstep)
+  obs.slope.test<-slope.test(x, model="trend", tt, theta=NULL, anc, mstep)
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)

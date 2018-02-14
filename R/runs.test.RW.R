@@ -68,7 +68,7 @@ runs.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE,
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
 
   if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
   
@@ -85,7 +85,7 @@ runs.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE,
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=tt)
 
     bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="RW")
 

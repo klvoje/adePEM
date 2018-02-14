@@ -60,7 +60,7 @@ fit3adequacy.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, vstep=NULL){
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
+  tt<-y$tt
 
   if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
 
@@ -70,7 +70,7 @@ fit3adequacy.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, vstep=NULL){
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="RW")
   obs.runs.test<-runs.test(x, model="RW")
-  obs.slope.test<-slope.test(x, time, model="RW")
+  obs.slope.test<-slope.test(x, tt, model="RW")
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.RW(y, nrep, conf, plot=FALSE, save.replicates = TRUE, vstep)
