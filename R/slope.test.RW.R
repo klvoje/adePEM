@@ -70,7 +70,7 @@ slope.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x, tt, model="RW")
+  obs.slope.test<-slope.test(x, model="RW", tt)
 
   ### Parametric bootstrap routine ###
 
@@ -82,7 +82,7 @@ slope.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE
 
     x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=tt)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm, tt, model="RW")
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm, model="RW", tt)
 
   }
 

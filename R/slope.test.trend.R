@@ -26,8 +26,8 @@
 #' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
 #' by the user (usually not recommended).
 #' 
-#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
-#' by the user (usually not recommended).
+#' @param int the intercept in the linear model used for detrending the data. This parameter is automtically defined as the trait value at time zero, if not set 
+#' by the user.
 #'
 #' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
 #' as a function of time.
@@ -63,21 +63,21 @@
 #'slope.test.trend(x)
 #'
 
-slope.test.trend<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
+slope.test.trend<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, int=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   tt<-y$tt
   
-  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(int)) int<-x[1]
   if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
   if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.slope.test<-slope.test(x, model="trend", tt, theta=NULL, anc, mstep)
+  obs.slope.test<-slope.test(x, model="trend", tt, theta=NULL, int, mstep)
 
   ### Parametric bootstrap routine ###
 
@@ -89,7 +89,7 @@ slope.test.trend<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TR
 
     x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=tt)
 
-    bootstrap.matrix[i,1]<-slope.test(x.sim$mm, model="trend", tt, theta=NULL, anc, mstep)
+    bootstrap.matrix[i,1]<-slope.test(x.sim$mm, model="trend", tt, theta=NULL, int, mstep)
 
   }
 

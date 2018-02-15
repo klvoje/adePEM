@@ -19,7 +19,7 @@
 #' @return least-square slope estimate
 #'
 
-slope.test <- function(x, model, tt, theta=NULL, anc=NULL, mstep=NULL){
+slope.test <- function(x, model, tt, theta=NULL, int=NULL, mstep=NULL){
   if (model=="RW")
   {
     x<-x-x[1]
@@ -30,7 +30,7 @@ slope.test <- function(x, model, tt, theta=NULL, anc=NULL, mstep=NULL){
 
   if (model =="trend")
   {
-    x<-x-(anc+mstep*tt)
+    x<-x-(int+mstep*tt)
     slope.est<-(lm((abs(x))~tt)$coeff[2])
   }
 

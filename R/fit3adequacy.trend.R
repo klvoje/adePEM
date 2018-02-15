@@ -23,8 +23,8 @@
 #' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
 #' by the user (usually not recommended).
 #' 
-#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
-#' by the user (usually not recommended).
+#' @param int the intercept in the linear model used for detrending the data. This parameter is automtically defined as the trait value at time zero, if not set 
+#' by the user.
 #'
 #' @details A wrapper function for investigating adequacy of the trend model applying all three tests at the same time.
 #'
@@ -59,14 +59,14 @@
 #'fit3adequacy.trend(x)
 #'
 
-fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
+fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vstep=NULL, int=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   tt<-y$tt
   
-  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(int)) int<-x[1]
   if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
   if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
 
@@ -74,14 +74,14 @@ fit3adequacy.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, mstep=NULL, vst
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="trend", tt, anc, mstep)
-  obs.runs.test<-runs.test(x, model="trend", tt, theta=NULL, anc, mstep)
-  obs.slope.test<-slope.test(x, model="trend", tt, theta=NULL, anc, mstep)
+  obs.auto.corr<-auto.corr(x, model="trend", tt, int, mstep)
+  obs.runs.test<-runs.test(x, model="trend", tt, theta=NULL, int, mstep)
+  obs.slope.test<-slope.test(x, model="trend", tt, theta=NULL, int, mstep)
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
-    out.runs<-runs.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
-    out.slope<-slope.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, anc)
+    out.auto<-auto.corr.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, int)
+    out.runs<-runs.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, int)
+    out.slope<-slope.test.trend(y, nrep, conf, plot=FALSE, save.replicates = TRUE, mstep, vstep, int)
 
   #Preparing the output
   output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),

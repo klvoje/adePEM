@@ -26,8 +26,8 @@
 #' @param vstep the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
 #' by the user (usually not recommended).
 #' 
-#' @param anc the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
-#' by the user (usually not recommended).
+#' @param int the intercept in the linear model used for detrending the data. This parameter is automtically defined as the trait value at time zero, if not set 
+#' by the user.
 #'
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
@@ -67,21 +67,21 @@
 #'
 
 
-auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, anc=NULL){
+auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, int=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   tt<-y$tt
 
-  if (is.null(anc)) anc<-opt.joint.GRW(y)$parameters[1]
+  if (is.null(int)) int<-opt.joint.GRW(y)$parameters[1]
   if (is.null(mstep)) mstep<-opt.joint.GRW(y)$parameters[2]
   if (is.null(vstep)) vstep<-opt.joint.GRW(y)$parameters[3]
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="trend", tt, anc, mstep)
+  obs.auto.corr<-auto.corr(x, model="trend", tt, int, mstep)
 
   ### Parametric bootstrap routine ###
 
@@ -94,7 +94,7 @@ auto.corr.test.trend<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicat
 
     x.sim<-sim.GRW(ns=length(x), ms=mstep, vs=vstep, vp=mean(v), nn=n, tt=tt)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="trend", tt, anc, mstep)
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="trend", tt, int, mstep)
 
   }
 

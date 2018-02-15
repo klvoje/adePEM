@@ -4,7 +4,7 @@
 \alias{slope.test}
 \title{Estimating the linear time-dependency of the trait variance}
 \usage{
-slope.test(x, model, tt, theta = NULL, anc = NULL, mstep = NULL)
+slope.test(x, model, tt, theta = NULL, int = NULL, mstep = NULL)
 }
 \arguments{
 \item{x}{vector of sample means}

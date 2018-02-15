@@ -5,7 +5,7 @@
 \title{Applying 3 adequacy tests to the trend model}
 \usage{
 fit3adequacy.trend(y, nrep = 1000, conf = 0.95, plot = TRUE,
-  mstep = NULL, vstep = NULL, anc = NULL)
+  mstep = NULL, vstep = NULL, int = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
@@ -28,8 +28,8 @@ by the user (usually not recommended).}
 \item{vstep}{the variance of the step distribution estimated from the observed data. This parameter is automatically estimated from the data, if not set 
 by the user (usually not recommended).}
 
-\item{anc}{the ancestral trait value estimated from the observed data. This parameter is automatically estimated from the data, if not set 
-by the user (usually not recommended).}
+\item{int}{the intercept in the linear model used for detrending the data. This parameter is automtically defined as the trait value at time zero, if not set 
+by the user.}
 }
 \value{
 First part of the output summarizes the number of iterations in the parametric bootstrap and the
