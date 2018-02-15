@@ -108,7 +108,7 @@ The trend model fails the autocorrelation test and the runs test, and passes the
 
 ![trend distributions](https://github.com/klvoje/adePEM/blob/master/extra/adequacy.trend.png)
 
-Functions for running each adequacy test alone are provided in the package (e.g. `auto.corr.test.stasis`, `runs.test.RW`, `slope.test.trend`). The wrapper function for investigating the adequacy of the stasis model is `fit4adequacy.stasis`. This function runs a fourth adequacy test that is only implemented for testing the adequacy of the stasis model. Low amounts of net evolution is part of the verbal definition of stasis, but not for random walk and directional trend. The `fit4adequacy.stasis` function therefore runs an test to check if the amount of net evolution is larger than expected given the model parameters in the stasis model. The function `net.change.test.stasis` runs this test alone on the data.
+Functions for running each adequacy test alone are provided in the package (e.g. `auto.corr.test.stasis`, `runs.test.RW`, `slope.test.trend`). The wrapper function for investigating the adequacy of the stasis model is `fit4adequacy.stasis`. This function runs a fourth adequacy test that is only implemented for testing the adequacy of the stasis model. A low amount of net evolution is part of the verbal definition of stasis, but not for random walk and directional trend. The `fit4adequacy.stasis` function therefore runs a test to check if the amount of net evolution is larger than expected given the  model parameters the stasis model. The function `net.change.test.stasis` runs this test alone on the data.
 
 
 
