@@ -21,9 +21,15 @@ Install the package from github using devtools:
 install.packages("devtools")
 
 devtools::install_github("klvoje/adePEM")
+
+require(adePEM)
 ```
 
 The package depends on the `paleoTS` package.
+
+```
+require(paleoTS)
+```
 
 
 ## Example
@@ -64,10 +70,10 @@ replications     1000.00
 confidence level    0.95
 
 $summary
-           estimate  min.sim max.sim p-value Result
-auto.corr    -0.318 -0.69919 0.38265   0.436 PASSED
-runs.test   1.09003 -2.73719 3.34277   0.526 PASSED
-slope.test  0.01199  -0.0217 0.04293   0.618 PASSED
+           estimate  min.sim max.sim p-value result
+auto.corr    -0.318 -0.66474 0.36931   0.494 PASSED
+runs.test   1.09003  -2.0057 4.09368    0.68 PASSED
+slope.test  0.01199 -0.02635 0.04576   0.498 PASSED
 ```
 
 The first part of the output summarizes the number of bootstrap replications (the number of simulated data sets) used for assessing model adequacy and the confidence level. 1000 replications and a confidence level of 0.95 are the default settings, but both can be defined by the user when running the `fit3adequacy.RW` function.
@@ -99,10 +105,10 @@ replications     1000.00
 confidence level    0.95
 
 $summary
-           estimate  min.sim max.sim p-value Result
-auto.corr   0.15903 -0.07639 0.93098   0.034 FAILED
-runs.test  -0.41179 -4.93166 1.71372   0.042 FAILED
-slope.test  0.00355 -0.07232 0.06886   0.862 PASSED
+           estimate  min.sim max.sim p-value result
+auto.corr    0.0464 -0.02127 0.97608   0.004 FAILED
+runs.test  -0.54272 -5.29741 0.23802   0.028 FAILED
+slope.test  0.00637 -0.13183  0.2477   0.934 PASSED
 ```
 The trend model fails the autocorrelation test and the runs test, and passes the slope test. This suggests that the trend model is not an adequate statistical description of the data.
 
