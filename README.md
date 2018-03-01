@@ -25,9 +25,11 @@ devtools::install_github("klvoje/adePEM")
 require(adePEM)
 ```
 
-The package depends on the `paleoTS` package.
+The `adePEM` package depends on the `paleoTS` package, which can be installed from CRAN. 
 
 ```
+install.packages("paleoTS")
+
 require(paleoTS)
 ```
 
