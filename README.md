@@ -4,7 +4,7 @@ This package allows assessing the adequacy of the three canonical models of evol
 
 Model fit in `paleoTS` is evaluated using AICc. However, the best model among a list of candidates according to an information criterion may not describe the data particularly well. This is true because any set of candidate models will only reflect a subset of ways of portraying evolutionary dynamics in a lineage. 
 
-Passing adequacy tests suggests the model provides an adequate statistical description of the trait dynamics observed in the data and that meaningful inferences can be drawn from the fitted model parameters. 
+Passing adequacy tests suggests the model provides an adequate statistical description of the trait dynamics in the data and that meaningful inferences can be drawn from the estimated model parameters. 
 
 The package includes functions to simulate datasets, calculate summary statistics and plot results. 
 
