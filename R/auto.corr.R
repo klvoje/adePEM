@@ -20,7 +20,7 @@
 
 
 auto.corr <- function(x, model, tt=NULL, int=NULL, mstep=NULL){
-  if (model=="RW")
+  if (model=="RW" | model=="EB")
     {
     x<-x-x[1]
     x<-diff(x,1)

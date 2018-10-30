@@ -22,7 +22,7 @@
 
 
 runs.test <- function(x, model, tt=NULL, theta=NULL, int=NULL, mstep=NULL){
-  if (model=="RW")
+  if (model=="RW"| model=="EB")
   {
     x<-x-x[1]
     x<-diff(x,1)
