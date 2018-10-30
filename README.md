@@ -8,9 +8,10 @@ Passing adequacy tests suggests the model provides an adequate statistical descr
 
 The package includes functions to simulate datasets, calculate summary statistics and plot results. 
 
-The methods for assessing adequacy of the stasis model were first described in the paper: Model adequacy and microevolutionary explanations for stasis in the fossil record. Voje, K.L., Starrfelt, J., and Liow, L.H. The American Naturalist. [In press] (http://www.journals.uchicago.edu/doi/10.1086/696265).
+The manuscript where the `adePEM` package is presented is currebntly in press in Methods in Ecology and Evolution: 
+Assessing adequacy of models of phyletic evolution in the fossil record. Voje, K.L. Methods in Ecology and Evoluton. https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13083
 
-The manuscript where the `adePEM` package is presented is currently under review.
+The methods for assessing adequacy of the stasis model were first described in the paper: Model adequacy and microevolutionary explanations for stasis in the fossil record. Voje, K.L., Starrfelt, J., and Liow, L.H. The American Naturalist. 191:509-523. (http://www.journals.uchicago.edu/doi/10.1086/696265).
 
 
 ## Installation
@@ -80,7 +81,7 @@ slope.test  0.01199 -0.02635 0.04576   0.498 PASSED
 
 The first part of the output summarizes the number of bootstrap replications (the number of simulated data sets) used for assessing model adequacy and the confidence level. 1000 replications and a confidence level of 0.95 are the default settings, but both can be defined by the user when running the `fit3adequacy.RW` function.
 
-The second part of the output contains information on the results of the adequacy tests. The first column names the adequacy tests. Please check out [Voje et al. 2018 (AmNat)](http://www.journals.uchicago.edu/doi/pdfplus/10.1086/696265) for detailed info on each adequacy test. The second column gives the test statistic computed on the real data. From the second column, we see that the autocorrelation is calculated to be negative and the slope test (which is the least-squares slope of how the (detrended) data changes with time) is positive. 
+The second part of the output contains information on the results of the adequacy tests. The first column names the adequacy tests. The second column gives the test statistic computed on the real data. From the second column, we see that the autocorrelation is calculated to be negative and the slope test (which is the least-squares slope of how the (detrended) data changes with time) is positive. 
 
 The third and fourth columns reports the smallest and largest test statistics calculated on the simulated data sets. As we can see, all the three test statistics computed on the real data (second column) are not close to the extreme values reported in columns three and four. 
 
@@ -131,5 +132,6 @@ Hunt, G. 2006. Fitting and Comparing Models of Phyletic Evolution: Random Walks 
 
 Jones, D. 2009. Directional evolution in the conodont Pterospathodus. Paleobiology 35: 413-431. [link](http://www.bioone.org/doi/abs/10.1666/0094-8373-35.3.413)
 
-Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist [in press]. [PDF](http://www.journals.uchicago.edu/doi/pdfplus/10.1086/696265)
+Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. Methods in Ecology and Evoluton (in press). [PDF](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13083)
 
+Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist 191:509-523. [PDF](http://www.journals.uchicago.edu/doi/pdfplus/10.1086/696265)
