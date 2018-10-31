@@ -1,6 +1,6 @@
 ## About adePEM (Assessing adequacy of phyletic-evolution models) 
 
-This package allows assessing the adequacy of the three canonical models of evolution in the fossil record stasis, trend and random walk developed by Hunt (2006) and implemented in the R package `paleoTS`.  
+This package allows assessing the adequacy of the three canonical models of evolution in the fossil record stasis, trend and random walk developed by Hunt (2006) and implemented in the R package `paleoTS`.
 
 Model fit in `paleoTS` is evaluated using AICc. However, the best model among a list of candidates according to an information criterion may not describe the data particularly well. This is true because any set of candidate models will only reflect a subset of ways of portraying evolutionary dynamics in a lineage. 
 
@@ -8,7 +8,7 @@ Passing adequacy tests suggests the model provides an adequate statistical descr
 
 The package includes functions to simulate datasets, calculate summary statistics and plot results. 
 
-The manuscript where the `adePEM` package is presented is currebntly in press in Methods in Ecology and Evolution: 
+The manuscript where the `adePEM` package is presented is in press in Methods in Ecology and Evolution: 
 Assessing adequacy of models of phyletic evolution in the fossil record. Voje, K.L. Methods in Ecology and Evoluton. https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13083
 
 The methods for assessing adequacy of the stasis model were first described in the paper: Model adequacy and microevolutionary explanations for stasis in the fossil record. Voje, K.L., Starrfelt, J., and Liow, L.H. The American Naturalist. 191:509-523. (http://www.journals.uchicago.edu/doi/10.1086/696265).
