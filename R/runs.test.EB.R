@@ -76,7 +76,7 @@ runs.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.re
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.runs.test<-runs.test_EB(x, model="EB")
+  obs.runs.test<-runs.test.EB(x, model="EB")
 
   ### Parametric bootstrap routine ###
 
@@ -88,7 +88,7 @@ runs.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.re
 
     x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-runs.test_EB(x.sim$mm, model="EB")
+    bootstrap.matrix[i,1]<-runs.test.EB(x.sim$mm, model="EB")
 
   }
 

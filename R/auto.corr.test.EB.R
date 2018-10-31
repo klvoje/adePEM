@@ -73,7 +73,7 @@ auto.corr.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, sa
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr_EB(x, model="EB")
+  obs.auto.corr<-auto.corr.EB(x, model="EB")
 
   ### Parametric bootstrap routine ###
 
@@ -86,7 +86,7 @@ auto.corr.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, sa
 
     x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr_EB(x.sim$mm, model="EB")
+    bootstrap.matrix[i,1]<-auto.corr.EB(x.sim$mm, model="EB")
 
   }
 

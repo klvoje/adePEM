@@ -73,7 +73,7 @@ slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
   lower.2<-(1-conf)
   upper.2<-conf
 
-  obs.slope.test<-slope.test_EB(x,time, model="EB")
+  obs.slope.test<-slope.test.EB(x,time, model="EB")
 
   ### Parametric bootstrap routine ###
 
@@ -85,7 +85,7 @@ slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
 
     x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-slope.test_EB(x.sim$mm,time, model="EB")
+    bootstrap.matrix[i,1]<-slope.test.EB(x.sim$mm,time, model="EB")
 
   }
 
