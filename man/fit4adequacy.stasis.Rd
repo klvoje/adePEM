@@ -60,7 +60,9 @@ fit4adequacy.stasis(x)
 
 }
 \references{
-Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+
+Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 }
 \seealso{
 \code{\link{fit3adequacy.RW}}, \code{\link{fit3adequacy.trend}}

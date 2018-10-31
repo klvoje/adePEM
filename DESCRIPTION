@@ -1,6 +1,6 @@
 Package: adePEM
 Title: Evaluate the adequacy of phyletic evolution models
-Version: 1.0
+Version: 1.1
 Author: Kjetil L. Voje
 Maintainer: Kjetil L. Voje <k.l.voje@gmail.com>
 Description: The package contains functions to evaluate the adequacy of the models of phyletic evolution (stasis, random walk, directional trend) implemented the paleoTS package (Hunt 2006; 2008; 2015). Whether a particular model represents an adequate statistical description of a time series of phyletic change is evaluated using parametric bootstrap routines and summary statistics.  
@@ -10,4 +10,4 @@ Imports:
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0.9000
