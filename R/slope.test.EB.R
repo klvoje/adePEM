@@ -1,9 +1,12 @@
-#' @title Applying the constant variance test to the random walk model
+#' @title Applying the constant variance test to the Early burst model
 #'
-#' @description Investigates if the random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the early burst model is an adequate statistical description of an evolutionary
 #' time series by applying the constant variance test.
 #'
 #' @param y a paleoTS object
+#' 
+#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
+#' (the model reduces to the BM model when alpha = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -44,19 +47,17 @@
 #'
 #'@author Kjetil L. Voje
 #'
-#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+#'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.trend}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
+#'## generate a paleoTS objects by simulating early burst
+#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequacy test
-#'slope.test.RW(x,vstep)
+#'slope.test.EB(x)
 #'
 
 
@@ -90,11 +91,9 @@ slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
 
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
   bootstrap.slope.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.slope.test])/nrep
-  bootstrap.slope.test.2<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>0])/nrep
-
 
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.slope.test>round(upper,3) | bootstrap.slope.test<round(lower,3) | bootstrap.slope.test.2>round(lower.2,3)) pass.slope.test<-"FAILED" else pass.slope.test<-"PASSED"
+  if (bootstrap.slope.test>round(upper,3) | bootstrap.slope.test<round(lower,3)) pass.slope.test<-"FAILED" else pass.slope.test<-"PASSED"
   if(bootstrap.slope.test>0.5) bootstrap.slope.test<-1-bootstrap.slope.test
 
   # Plot the test statistics estimated from the simulated data
@@ -104,9 +103,9 @@ slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
   }
 
   #Preparing the output
-  output<-as.data.frame(cbind(round(obs.slope.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.slope.test/0.5, bootstrap.slope.test.2, pass.slope.test), nrow=6, byrow=TRUE)
+  output<-as.data.frame(cbind(round(obs.slope.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.slope.test/0.5, pass.slope.test), nrow=5, byrow=TRUE)
   rownames(output)<-"slope.test"
-  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "% > 0","result")
+  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "result")
 
 
   summary.out<-as.data.frame(c(nrep, conf))

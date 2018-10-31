@@ -1,9 +1,12 @@
-#' @title Applying the autocorrelation test to the Random walk model
+#' @title Applying the autocorrelation test to the Early burst model
 #'
-#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the Early burst model is an adequate statistical description of an evolutionary
 #' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
+#'
+#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
+#' (the model reduces to the BM model when alpha = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -25,7 +28,7 @@
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
 #' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
-#' If a different model is evaluated (random walk or directional trend), the data is
+#' If a different model is evaluated (e.g. random walk or directional trend), the data is
 #' detrended prior to the calculation of autocorrelation.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
@@ -47,19 +50,17 @@
 #'
 #'@author Kjetil L. Voje
 #'
-#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+#'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
+#'## generate a paleoTS objects by simulating early burst
+#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequasy test
-#'auto.corr.test.RW(x,vstep)
+#'auto.corr.test.EB(x)
 #'
 
 auto.corr.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){

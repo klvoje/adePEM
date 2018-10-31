@@ -1,9 +1,12 @@
-#' @title Applying the runs test to the random walk model
+#' @title Applying the runs test to the Early burst model
 #'
-#' @description Investigates if the random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the Early burst model is an adequate statistical description of an evolutionary
 #' time series by applying the runs test.
 #'
 #' @param y a paleoTS object
+#' 
+#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
+#' (the model reduces to the BM model when alpha = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -50,19 +53,17 @@
 #'
 #'@author Kjetil L. Voje
 #'
-#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+#'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.RW}}, \code{\link{fit3adequasy.trend}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
+#'## generate a paleoTS objects by simulating early burst
+#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequacy test
-#'runs.test.RW(x,vstep)
+#'runs.test.EB(x,vstep)
 #'
 
 runs.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){

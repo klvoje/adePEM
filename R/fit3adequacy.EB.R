@@ -1,9 +1,12 @@
 #' @title Applying 3 adequacy tests to the Early burst model
 #'
-#' @description Investigating if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigating if the Early burst model is an adequate statistical description of an evolutionary
 #' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
 #'
 #' @param y a paleoTS object
+#'
+#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
+#' (the model reduces to the BM model when alpha = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -42,19 +45,17 @@
 #'
 #'@author Kjetil L. Voje
 #'
-#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+#'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{fit4adequasy.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating random walk
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
-#'
-#'## estimate the variance of the step distribution
-#'vstep <- mle.URW(x)[1]
+#'## generate a paleoTS objects by simulating early burst
+#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
 #'
 #'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequasy.RW(x,vstep)
+#'fit3adequacy.EB(x)
 #'
 
 fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=TRUE){
@@ -86,14 +87,14 @@ fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
               as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.slope[[3]]),ncol=6,byrow=FALSE)))
+              as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
 
   output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
                               c(output[c(3,8,13)]), c(output[c(4,9,14)]),
-                              c("","",output[15]), c(output[c(5,10,16)])), ncol=6)
+                              c(output[c(5,10,15)])), ncol=5)
 
   rownames(output)<-c("auto.corr", "runs.test", "slope.test")
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "% > 0", "result")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "result")
 
   if (plot==TRUE) {
     par(mfrow=c(1,3))
