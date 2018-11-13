@@ -75,9 +75,9 @@ fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr_EB(x, model="EB")
-  obs.runs.test<-runs.test_EB(x, model="EB")
-  obs.slope.test<-slope.test_EB(x,time, model="EB")
+  obs.auto.corr<-auto.corr(x, model="EB")
+  obs.runs.test<-runs.test(x, model="EB")
+  obs.slope.test<-slope.test(x,time, model="EB")
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.EB(y, alpha, vstep, nrep, conf, plot=FALSE)
