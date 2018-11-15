@@ -33,10 +33,10 @@
 #'for.plotting<-auto.corr.test.trend(x,mstep,vstep)
 #'
 #'## plot
-#'plot.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.corr")
+#'plotting.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.corr")
 #'
 
-plot.distributions<-function(sim.data, obs, test, xlab, main){
+plotting.distributions<-function(sim.data, obs, test, xlab, main){
 
   if(test=="auto.corr") {
   low<--1;
