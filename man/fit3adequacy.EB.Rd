@@ -4,7 +4,7 @@
 \alias{fit3adequacy.EB}
 \title{Applying 3 adequacy tests to the Early burst model}
 \usage{
-fit3adequacy.EB(y, vstep = NULL, alpha = NULL, nrep = 1000,
+fit3adequacy.EB(y, vstep = NULL, r = NULL, nrep = 1000,
   conf = 0.95, plot = TRUE)
 }
 \arguments{
@@ -12,8 +12,8 @@ fit3adequacy.EB(y, vstep = NULL, alpha = NULL, nrep = 1000,
 
 \item{vstep}{the variance of the step distribution estimated from the observed data.}
 
-\item{alpha}{parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-(the model reduces to the BM model when alpha = 0).}
+\item{r}{parameter describing the decreasing rate change through time. r is restricted to values below zero 
+(the model reduces to the BM model when r = 0).}
 
 \item{nrep}{number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.}
 
@@ -54,7 +54,7 @@ applying all three tests at the same time.
 }
 \examples{
 ## generate a paleoTS objects by simulating early burst
-x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+x <- sim.EB(ns=40, r=-1, vs=0.1)
 
 ## Investigate if the time series pass all thee adequacy tests
 fit3adequacy.EB(x)

@@ -4,13 +4,13 @@
 \alias{sim.EB}
 \title{Simulate early burst time-series}
 \usage{
-sim.EB(ns = 20, alpha = -1, vs = 0.1, vp = 0.01, nn = rep(20,
-  ns), tt = 0:(ns - 1))
+sim.EB(ns = 20, r = -1, vs = 0.1, vp = 0.01, nn = rep(20, ns),
+  tt = 0:(ns - 1))
 }
 \arguments{
 \item{ns}{number of samples in time-series}
 
-\item{alpha}{parameter describing the decreasing rate of change through time.}
+\item{r}{parameter describing the decreasing rate of change through time.}
 
 \item{vs}{variance of the step distribution.}
 
@@ -37,7 +37,7 @@ See reference below for details on the model.
 }
 \examples{
 ## generate a paleoTS objects by simulating early burst
-x <- sim.EB(ns=20, alpha=-1, vs=0.1)
+x <- sim.EB(ns=20, r=-1, vs=0.1)
 
 ## Investigate if the time series pass all thee adequacy tests
 fit3adequacy.EB(x)

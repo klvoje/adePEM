@@ -4,14 +4,14 @@
 \alias{runs.test.EB}
 \title{Applying the runs test to the Early burst model}
 \usage{
-runs.test.EB(y, alpha, vstep, nrep = 1000, conf = 0.95, plot = TRUE,
-  save.replicates = TRUE)
+runs.test.EB(y, r = NULL, vstep = NULL, nrep = 1000, conf = 0.95,
+  plot = TRUE, save.replicates = TRUE)
 }
 \arguments{
 \item{y}{a paleoTS object}
 
-\item{alpha}{parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-(the model reduces to the BM model when alpha = 0).}
+\item{r}{parameter describing the decreasing rate change through time. r is restricted to values below zero 
+(the model reduces to the BM model when r = 0).}
 
 \item{vstep}{the variance of the step distribution estimated from the observed data.}
 
@@ -63,7 +63,7 @@ implemented as the test statistic.
 }
 \examples{
 ## generate a paleoTS objects by simulating early burst
-x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+x <- sim.EB(ns=40, r=-1, vs=0.1)
 
 ## investigate if the time series pass the adequacy test
 runs.test.EB(x,vstep)

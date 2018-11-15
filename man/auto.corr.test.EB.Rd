@@ -4,14 +4,14 @@
 \alias{auto.corr.test.EB}
 \title{Applying the autocorrelation test to the Early burst model}
 \usage{
-auto.corr.test.EB(y, alpha, vstep, nrep = 1000, conf = 0.95,
-  plot = TRUE, save.replicates = TRUE)
+auto.corr.test.EB(y, r = NULL, vstep = NULL, nrep = 1000,
+  conf = 0.95, plot = TRUE, save.replicates = TRUE)
 }
 \arguments{
 \item{y}{a paleoTS object}
 
-\item{alpha}{parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-(the model reduces to the BM model when alpha = 0).}
+\item{r}{parameter describing the decreasing rate change through time. r is restricted to values below zero 
+(the model reduces to the BM model when r = 0).}
 
 \item{vstep}{the variance of the step distribution estimated from the observed data.}
 
@@ -60,7 +60,7 @@ detrended prior to the calculation of autocorrelation.
 }
 \examples{
 ## generate a paleoTS objects by simulating early burst
-x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+x <- sim.EB(ns=40, r=-1, vs=0.1)
 
 ## investigate if the time series pass the adequasy test
 auto.corr.test.EB(x)
@@ -72,7 +72,7 @@ Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossi
 Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 }
 \seealso{
-\code{\link{fit3adequasy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+\code{\link{fit3adequasy.EB}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 }
 \author{
 Kjetil L. Voje
