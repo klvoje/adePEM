@@ -101,7 +101,7 @@ auto.corr.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replica
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE){
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
+    plotting.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
   }
 
   #Preparing the outout

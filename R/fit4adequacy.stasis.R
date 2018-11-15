@@ -96,10 +96,10 @@ fit4adequacy.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, omega=NULL){
   if (plot==TRUE) {
     par(mfrow=c(2,2));
     model.names<-c("auto.corr", "runs.test", "slope.test", "net.change.test")
-    plot.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
-    plot.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plot.distributions(out.slope$replicates,obs.slope.test, model.names[3], xlab="Simulated data", main="Fixed variance");
-    plot.distributions(out.net$replicates,obs.net.change.test, model.names[4], xlab="Simulated data", main="Net evolution");
+    plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
+    plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
+    plotting.distributions(out.slope$replicates,obs.slope.test, model.names[3], xlab="Simulated data", main="Fixed variance");
+    plotting.distributions(out.net$replicates,obs.net.change.test, model.names[4], xlab="Simulated data", main="Net evolution");
   }
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")

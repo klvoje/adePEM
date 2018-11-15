@@ -96,7 +96,7 @@ net.change.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replic
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.net.change.test, test="net.change.test", xlab="Simulated data", main="Net evolution");
+    plotting.distributions(bootstrap.matrix[,1],obs.net.change.test, test="net.change.test", xlab="Simulated data", main="Net evolution");
   }
 
   #Preparing the output

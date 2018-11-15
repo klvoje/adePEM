@@ -103,7 +103,7 @@ auto.corr.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TR
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE){
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
+    plotting.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
   }
 
   #Preparing the output

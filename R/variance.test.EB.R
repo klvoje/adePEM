@@ -102,7 +102,7 @@ variance.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRU
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs_var_divided, test="var.test", xlab="Simulated data", main="Reduced variance");
+    plotting.distributions(bootstrap.matrix[,1],obs_var_divided, test="var.test", xlab="Simulated data", main="Reduced variance");
   }
 
   #Preparing the output

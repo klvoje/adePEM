@@ -105,7 +105,7 @@ slope.test.trend<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TR
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Fixed variance");
+    plotting.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Fixed variance");
   }
 
   #Preparing the ouput
