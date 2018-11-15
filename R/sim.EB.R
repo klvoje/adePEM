@@ -4,7 +4,7 @@
 #'
 #' @param ns number of samples in time-series
 #' 
-#' @param alpha parameter describing the decreasing rate of change through time.
+#' @param r parameter describing the decreasing rate of change through time.
 #'
 #' @param vs variance of the step distribution.
 #' 
@@ -32,24 +32,24 @@
 #'
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=20, alpha=-1, vs=0.1)
+#'x <- sim.EB(ns=20, r=-1, vs=0.1)
 #'
 #'## Investigate if the time series pass all thee adequacy tests
 #'fit3adequacy.EB(x)
 #'
 
-sim.EB<-function (ns = 20, alpha=-1, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)) 
+sim.EB<-function (ns = 20, r=-1, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)) 
 {
   MM <- array(dim = ns)
   mm <- array(dim = ns)
   vv <- array(dim = ns)
   dt <- diff(tt)
-  inc <- rnorm(ns - 1, 0, sqrt(vs*(exp(alpha*tt[2:ns]))))
+  inc <- rnorm(ns - 1, 0, sqrt(vs*(exp(r*tt[2:ns]))))
   MM <- cumsum(c(0, inc))
   mm <- MM + rnorm(ns, 0, sqrt(vp/nn))
   vv <- rep(vp, ns)
-  gp <- c(vs, alpha)
-  names(gp) <- c("vstep", "alpha")
+  gp <- c(vs, r)
+  names(gp) <- c("vstep", "r")
   res <- as.paleoTS(mm = mm, vv = vv, nn = nn, tt = tt, MM = MM, 
                     genpars = gp, label = "Created by sim.EB()", reset.time = FALSE)
   return(res)

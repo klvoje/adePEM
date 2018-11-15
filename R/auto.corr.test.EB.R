@@ -5,8 +5,8 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-#' (the model reduces to the BM model when alpha = 0).
+#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -53,27 +53,30 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequasy.EB}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+#'x <- sim.EB(ns=40, r=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequasy test
 #'auto.corr.test.EB(x)
 #'
 
-auto.corr.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+auto.corr.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
 
+  if (is.null(vstep)) vstep<-opt.joint.EB(y)$parameters[2]
+  if (is.null(r)) r<-opt.joint.EB(y)$parameters[3]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr.EB(x, model="EB")
+  obs.auto.corr<-auto.corr(x, model="EB")
 
   ### Parametric bootstrap routine ###
 
@@ -84,9 +87,9 @@ auto.corr.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, sa
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.EB(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr.EB(x.sim$mm, model="EB")
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="EB")
 
   }
 

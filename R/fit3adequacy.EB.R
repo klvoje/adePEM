@@ -5,8 +5,8 @@
 #'
 #' @param y a paleoTS object
 #'
-#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-#' (the model reduces to the BM model when alpha = 0).
+#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -52,13 +52,13 @@
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+#'x <- sim.EB(ns=40, r=-1, vs=0.1)
 #'
 #'## Investigate if the time series pass all thee adequacy tests
 #'fit3adequacy.EB(x)
 #'
 
-fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -67,8 +67,8 @@ fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=
   
   if (is.null(vstep)) 
     vstep<-opt.joint.EB(y)$par[2]
-  if (is.null(alpha)) 
-    alpha<-opt.joint.EB(y)$par[3]
+  if (is.null(r)) 
+    r<-opt.joint.EB(y)$par[3]
   
 
   lower<-(1-conf)/2
@@ -77,24 +77,25 @@ fit3adequacy.EB<-function(y, vstep=NULL, alpha=NULL, nrep=1000, conf=0.95, plot=
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="EB")
   obs.runs.test<-runs.test(x, model="EB")
-  obs.slope.test<-slope.test(x,time, model="EB")
+  obs.var.test<-var(x[1:end_1])/var(na.exclude(x[end_1+1:end_2]))
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.EB(y, alpha, vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.EB(y, alpha, vstep, nrep, conf, plot=FALSE)
-    out.slope<-slope.test.EB(y, alpha, vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
+    out.runs<-runs.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
+    out.var<-var.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
 
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
               as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
+              as.vector(matrix(unlist(out.var[[3]]),ncol=6,byrow=FALSE)))
 
   output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
                               c(output[c(3,8,13)]), c(output[c(4,9,14)]),
-                              c(output[c(5,10,15)])), ncol=5)
+                              c("", "", output[c(15)]), c(output[c(5,10,16)])), 
+                              ncol=6)
 
-  rownames(output)<-c("auto.corr", "runs.test", "slope.test")
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "result")
+  rownames(output)<-c("auto.corr", "runs.test", "var.test")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "fraction incorrect variance", "result")
 
   if (plot==TRUE) {
     par(mfrow=c(1,3))

@@ -5,8 +5,8 @@
 #'
 #' @param y a paleoTS object
 #' 
-#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-#' (the model reduces to the BM model when alpha = 0).
+#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -60,23 +60,26 @@
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+#'x <- sim.EB(ns=40, r=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequacy test
 #'runs.test.EB(x,vstep)
 #'
 
-runs.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+runs.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  if (is.null(vstep)) vstep<-opt.joint.EB(y)$parameters[2]
+  if (is.null(r)) r<-opt.joint.EB(y)$parameters[3]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.runs.test<-runs.test.EB(x, model="EB")
+  obs.runs.test<-runs.test(x, model="EB")
 
   ### Parametric bootstrap routine ###
 
@@ -86,9 +89,9 @@ runs.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.re
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.EB(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-runs.test.EB(x.sim$mm, model="EB")
+    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="EB")
 
   }
 

@@ -28,14 +28,6 @@ slope.test <- function(x, model, tt, theta=NULL, int=NULL, mstep=NULL){
     slope.est<-(lm((abs(x))~tt)$coeff[2])
   }
   
-  if (model=="EB")
-  {
-    x<-x-x[1]
-    x<-diff(x,1)
-    time<-time[-(length(time))]
-    slope.est<-(lm(log(abs(x+0.00000001))~time)$coeff[2])
-  }
-  
   if (model =="trend")
   {
     x<-x-(int+mstep*tt)

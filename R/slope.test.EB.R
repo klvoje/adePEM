@@ -5,8 +5,8 @@
 #'
 #' @param y a paleoTS object
 #' 
-#' @param alpha parameter describing the decreasing rate change through time. alpha is restricted to values below zero 
-#' (the model reduces to the BM model when alpha = 0).
+#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
 #'
@@ -54,59 +54,61 @@
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, alpha=-1, vs=0.1)
+#'x <- sim.EB(ns=40, r=-1, vs=0.1)
 #'
 #'## investigate if the time series pass the adequacy test
 #'slope.test.EB(x)
 #'
 
 
-slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+var.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
+  
+  if (is.null(vstep)) vstep<-opt.joint.EB(y)$parameters[2]
+  if (is.null(r)) r<-opt.joint.EB(y)$parameters[3]
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
-  lower.2<-(1-conf)
-  upper.2<-conf
-
-  obs.slope.test<-slope.test.EB(x,time, model="EB")
 
   ### Parametric bootstrap routine ###
 
   #Matrix that will contain the test statistic for each simulated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
+  end_1<-length(x)/2
+  end_2<-length(x)
+  obs_var_divided<-var(x[1:end_1])/var(na.exclude(x[end_1+1:end_2]))
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.EB(ns=length(x), alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time)
-
-    bootstrap.matrix[i,1]<-slope.test.EB(x.sim$mm,time, model="EB")
-
+    x.sim<-sim.EB(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
+    bootstrap.matrix[i,1]<-var(x.sim$mm[1:end_1])/var(na.exclude(x.sim$mm[end_1+1:end_2]))
+    
   }
 
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
-  bootstrap.slope.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.slope.test])/nrep
-
+  bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_var_divided])/nrep
+  wrong_variances<-sum(bootstrap.matrix < 1)/nrep
+  
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.slope.test>round(upper,3) | bootstrap.slope.test<round(lower,3)) pass.slope.test<-"FAILED" else pass.slope.test<-"PASSED"
-  if(bootstrap.slope.test>0.5) bootstrap.slope.test<-1-bootstrap.slope.test
-
+  if (bootstrap.var.test>round(upper,3) | bootstrap.var.test<round(lower,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
+  if(bootstrap.var.test>0.5) bootstrap.var.test<-1-bootstrap.var.test
+  if (wrong_variances <round(lower*2,3)) pass.var.test<-"PASSED" else pass.var.test<-"FAILED"
+  
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plot.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Reduced variance");
+    plot.distributions(bootstrap.matrix[,1],obs_var_divided, test="var.test", xlab="Simulated data", main="Reduced variance");
   }
 
   #Preparing the output
-  output<-as.data.frame(cbind(round(obs.slope.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.slope.test/0.5, pass.slope.test), nrow=5, byrow=TRUE)
-  rownames(output)<-"slope.test"
-  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "result")
-
+  output<-as.data.frame(cbind(round(obs_var_divided,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.var.test/0.5, wrong_variances, pass.var.test), nrow=6, byrow=TRUE)
+  rownames(output)<-"var.test"
+  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "fraction incorrect variance", "result")
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")
@@ -122,3 +124,4 @@ slope.test.EB<-function(y, alpha, vstep, nrep=1000, conf=0.95, plot=TRUE, save.r
     return(out)
   }
 }
+
