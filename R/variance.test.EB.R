@@ -54,7 +54,7 @@
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, r=-1, vs=0.1)
+#'x <- sim.EB(ns=20)
 #'
 #'## investigate if the time series pass the adequacy test
 #'slope.test.EB(x)
@@ -79,36 +79,39 @@ variance.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRU
   #Matrix that will contain the test statistic for each simulated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
-  end_1<-length(x)/2
-  end_2<-length(x)
-  obs_var_divided<-var(x[1:end_1])/var(na.exclude(x[end_1+1:end_2]))
+  dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
+  slope_linear_model<-max(dist_trav_morphospace)/max(time)
+  obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
+  
+  
   # parametric boostrap
   for (i in 1:nrep){
 
     x.sim<-sim.EB(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
-    bootstrap.matrix[i,1]<-var(x.sim$mm[1:end_1])/var(na.exclude(x.sim$mm[end_1+1:end_2]))
+    dist_trav_morphospace.sim<-dist.in.morphospace(x.sim, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
+    slope_linear_model_sim<-max(dist_trav_morphospace.sim)/max(x.sim$tt)
+    bootstrap.matrix[i,1]<-sum(c(0,dist_trav_morphospace.sim)-(slope_linear_model_sim*x.sim$tt))
     
   }
 
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
-  bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_var_divided])/nrep
-  wrong_variances<-sum(bootstrap.matrix < 1)/nrep
+  bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_sum_of_residuals])/nrep
+  wrong_variances<-sum(bootstrap.matrix < 0)/nrep
   
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.var.test>round(upper,3) | bootstrap.var.test<round(lower,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
+  if (bootstrap.var.test>round(upper,3) | bootstrap.var.test<round(lower,3) | wrong_variances >round(lower*2,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
   if(bootstrap.var.test>0.5) bootstrap.var.test<-1-bootstrap.var.test
-  if (wrong_variances <round(lower*2,3)) pass.var.test<-"PASSED" else pass.var.test<-"FAILED"
-  
+
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plotting.distributions(bootstrap.matrix[,1],obs_var_divided, test="var.test", xlab="Simulated data", main="Reduced variance");
+    plotting.distributions(bootstrap.matrix[,1],obs_sum_of_residuals, test="slope.test", xlab="Simulated data", main="Reduced variance");
   }
 
   #Preparing the output
-  output<-as.data.frame(cbind(round(obs_var_divided,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.var.test/0.5, wrong_variances, pass.var.test), nrow=6, byrow=TRUE)
+  output<-as.data.frame(cbind(round(obs_sum_of_residuals,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.var.test/0.5, wrong_variances, pass.var.test), nrow=6, byrow=TRUE)
   rownames(output)<-"var.test"
-  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "fraction incorrect variance", "result")
+  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "frac. neg. resid.", "result")
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")

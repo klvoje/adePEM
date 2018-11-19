@@ -77,9 +77,9 @@ fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="EB")
   obs.runs.test<-runs.test(x, model="EB")
-  end_1<-length(x)/2
-  end_2<-length(x)
-  obs.var.test<-var(x[1:end_1])/var(na.exclude(x[end_1+1:end_2]))
+  dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
+  slope_linear_model<-max(dist_trav_morphospace)/max(time)
+  obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
@@ -97,14 +97,14 @@ fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE
                               ncol=6)
 
   rownames(output)<-c("auto.corr", "runs.test", "var.test")
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "fraction incorrect variance", "result")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "frac. neg. resid.", "result")
 
   if (plot==TRUE) {
     par(mfrow=c(1,3))
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plotting.distributions(out.var$replicates,obs.var.test, model.names[3], xlab="Simulated data", main="Reduced variance");
+    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="Reduced variance");
 
   }
   summary.out<-as.data.frame(c(nrep, conf))

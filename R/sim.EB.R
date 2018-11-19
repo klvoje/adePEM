@@ -38,7 +38,7 @@
 #'fit3adequacy.EB(x)
 #'
 
-sim.EB<-function (ns = 20, r=-1, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)) 
+sim.EB<-function (ns = 20, r=-5, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)/ns) 
 {
   MM <- array(dim = ns)
   mm <- array(dim = ns)
