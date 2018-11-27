@@ -1,10 +1,10 @@
-#' @title Simulate early burst time-series
+#' @title Simulate time-series where the rate of evolution increase or decrease with time
 #'
-#' @description Simulate the evolution of a trait according to the early burst model.
+#' @description Simulate the evolution of a trait according to a random walk where where the rate of evolution increase or decrease with time.
 #'
 #' @param ns number of samples in time-series
 #' 
-#' @param r parameter describing the decreasing rate of change through time.
+#' @param r parameter describing the decreasing/increasing rate of change through time.
 #'
 #' @param vs variance of the step distribution.
 #' 
@@ -14,9 +14,9 @@
 #' 
 #' @param tt vector of sample ages, increases from oldest to youngest
 #'
-#' @details The functin simulate the evolution of a trait according to the early burst model: A model with 
-#' initial higher rates of evolution (early burst) followed by an exponential drop in the rate of evolution. 
-#' See reference below for details on the model. 
+#' @details The function simulate the evolution of a trait where the rate of evolution increase or decrease with time:
+#' The trait evolves accoridng to a random walk where the rate of evolution show either an exponential
+#' increase or decrease with time. See reference below for details on the model. 
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -31,14 +31,14 @@
 #'@export
 #'
 #'@examples
-#'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=20, r=-1, vs=0.1)
+#'## generate a paleoTS objects by simulating a trait that shows an increasing rate of evolution with time. 
+#'x <- sim.accel_decel(ns=20, r=-1, vs=0.1)
 #'
 #'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequacy.EB(x)
+#'fit3adequacy.accel(x)
 #'
 
-sim.EB<-function (ns = 20, r=-5, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)/ns) 
+sim.accel_decel<-function (ns = 20, r=-5, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(ns - 1)/ns) 
 {
   MM <- array(dim = ns)
   mm <- array(dim = ns)
@@ -51,7 +51,7 @@ sim.EB<-function (ns = 20, r=-5, vs = 0.1, vp = 0.01, nn = rep(20, ns), tt = 0:(
   gp <- c(vs, r)
   names(gp) <- c("vstep", "r")
   res <- as.paleoTS(mm = mm, vv = vv, nn = nn, tt = tt, MM = MM, 
-                    genpars = gp, label = "Created by sim.EB()", reset.time = FALSE)
+                    genpars = gp, label = "Created by sim.accel_decel()", reset.time = FALSE)
   return(res)
 }
 

@@ -1,11 +1,11 @@
-#' @title Applying the autocorrelation test to the Early burst model
+#' @title Applying the autocorrelation test to the accelerated evolution model
 #'
-#' @description Investigates if the Early burst model is an adequate statistical description of an evolutionary
+#' @description Investigates if the accelerated evolution model is an adequate statistical description of an evolutionary
 #' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
 #'
-#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' @param r parameter describing the increasing rate change through time. r is restricted to values larger than zero 
 #' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
@@ -63,20 +63,20 @@
 #'auto.corr.test.EB(x)
 #'
 
-auto.corr.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+auto.corr.test.accel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
 
-  if (is.null(vstep)) vstep<-opt.joint.EB(y)$parameters[2]
-  if (is.null(r)) r<-opt.joint.EB(y)$parameters[3]
+  if (is.null(vstep)) vstep<-opt.joint.accel(y)$parameters[2]
+  if (is.null(r)) r<-opt.joint.accel(y)$parameters[3]
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="EB")
+  obs.auto.corr<-auto.corr(x, model="accel_decel")
 
   ### Parametric bootstrap routine ###
 
@@ -87,9 +87,9 @@ auto.corr.test.EB<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TR
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.EB(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
+    x.sim<-sim.accel_decel(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="EB")
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="accel_decel")
 
   }
 

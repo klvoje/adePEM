@@ -1,11 +1,11 @@
-#' @title Applying 3 adequacy tests to the Early burst model
+#' @title Applying 3 adequacy tests to the decelerated evolution model
 #'
-#' @description Investigating if the Early burst model is an adequate statistical description of an evolutionary
-#' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
+#' @description Investigating if the decelerated evolution model is an adequate statistical description of an evolutionary
+#' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) test of decelerated evolution.
 #'
 #' @param y a paleoTS object
 #'
-#' @param r parameter describing the decreasing rate change through time. r is restricted to values below zero 
+#' @param r parameter describing the decreasing rate of evolution through time. r is restricted to values smaller than zero 
 #' (the model reduces to the BM model when r = 0).
 #'
 #' @param vstep the variance of the step distribution estimated from the observed data.
@@ -22,8 +22,8 @@
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
 #'
-#' @details A wrapper function for investigating adequacy of the directional trend model
-#' applying all three tests at the same time.
+#' @details A wrapper function for investigating the adequacy of the decelerated rate evolution model by
+#' applying all three adequacy tests at the same time.
 #'
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -52,13 +52,13 @@
 #' @export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, r=-1, vs=0.1)
+#'x <- sim.accel_decel(ns=40, r=-1, vs=0.1)
 #'
 #'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequacy.EB(x)
+#'fit3adequacy.decel(x)
 #'
 
-fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -66,25 +66,25 @@ fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE
   time<-y$tt
   
   if (is.null(vstep)) 
-    vstep<-opt.joint.EB(y)$par[2]
+    vstep<-opt.joint.decel(y)$par[2]
   if (is.null(r)) 
-    r<-opt.joint.EB(y)$par[3]
+    r<-opt.joint.decel(y)$par[3]
   
 
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="EB")
-  obs.runs.test<-runs.test(x, model="EB")
+  obs.auto.corr<-auto.corr(x, model="accel_decel")
+  obs.runs.test<-runs.test(x, model="accel_decel")
   dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
   slope_linear_model<-max(dist_trav_morphospace)/max(time)
   obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
-    out.var<-variance.test.EB(y, r, vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
+    out.runs<-runs.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
+    out.var<-variance.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
 
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
@@ -104,7 +104,7 @@ fit3adequacy.EB<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="Reduced variance");
+    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="slower rate");
 
   }
   summary.out<-as.data.frame(c(nrep, conf))
