@@ -1,15 +1,10 @@
-#' @title Applying the autocorrelation test to the accelerated evolution model
+#' @title Applying the constant variance test to the OU model
 #'
-#' @description Investigates if the accelerated evolution model is an adequate statistical description of an evolutionary
-#' time series by applying the autocorrelation test.
+#' @description Investigates if the OU model is an adequate statistical description of an evolutionary
+#' time series by applying the constant variance test.
 #'
 #' @param y a paleoTS object
-#'
-#' @param r parameter describing the increasing rate change through time. r is restricted to values larger than zero 
-#' (the model reduces to the BM model when r = 0).
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
+#' 
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -24,14 +19,14 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
+#' 
+#' @param int the intercept in the linear model used for detrending the data. This parameter is automtically defined as the trait value at time zero, if not set 
+#' by the user.
 #'
-#' @details This function calculates the autocorrelation in a vector of sample means
-#' defined as the correlation of the first n-1 observations with the last n-1. The
-#' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
-#' If a different model is evaluated (e.g. random walk or directional trend), the data is
-#' detrended prior to the calculation of autocorrelation.
+#' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
+#' as a function of time.
 #'
-#' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
+#' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
 #' part of the output is:
 #'
@@ -53,76 +48,84 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{fit3adequasy.EB}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.RW}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating early burst
-#'x <- sim.EB(ns=40, r=-1, vs=0.1)
-#'
-#'## investigate if the time series pass the adequasy test
-#'auto.corr.test.EB(x)
+#'## generate a paleoTS objects by simulating a trend
+#'x <- sim.OU(ns=20
+
+#'## investigate if the time series pass the adequacy test
+#'slope.test.OU(x)
 #'
 
-auto.corr.test.accel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+slope.test.OU<-function(y,nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, mstep=NULL, vstep=NULL, int=NULL){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
-
-  if (is.null(vstep)) vstep<-opt.joint.accel(y)$parameters[2]
-  if (is.null(r)) r<-opt.joint.accel(y)$parameters[3]
+  tt<-y$tt
+  
+  anc<-opt.joint.OU(y)$parameters[1]
+  vstep<-opt.joint.OU(y)$parameters[2]
+  theta<-opt.joint.OU(y)$parameters[3]
+  alpha<-opt.joint.OU(y)$parameters[4]
+  
+  tmp_OU<-opt.joint.OU(y)
+  pred_OU<-est.OU(y, tmp_OU, tt=tt)
+  detrended_OU<-x-pred_OU$ee
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="accel_decel")
+  obs.slope.test<-slope.test(detrended_OU, model="OU", tt)
 
   ### Parametric bootstrap routine ###
 
-  #Matrix that will contain the test statistic for each simuluated data set (time series)
+  #Matrix that will contain the test statistic for each simulated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
-
 
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.accel_decel(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
-
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="accel_decel")
+    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=tt)
+    tmp_OU.sim<-opt.joint.OU(x.sim)
+    pred_OU.sim<-est.OU(x.sim, tmp_OU.sim, tt=tt)
+    detrended_OU.sim<-x.sim$mm-pred_OU.sim$ee
+    
+    bootstrap.matrix[i,1]<-slope.test(detrended_OU.sim, model="OU", tt)
 
   }
 
-  # Estimating the ratio of how often the observed autocorrelation is smaller than the autocorrelation in the simulated data
-  bootstrap.auto.corr<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.auto.corr])/nrep
+
+  # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
+  bootstrap.slope.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs.slope.test])/nrep
 
   # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.auto.corr>round(upper,3) | bootstrap.auto.corr<round(lower,3)) pass.auto.corr.test<-"FAILED" else pass.auto.corr.test<-"PASSED"
-  if(bootstrap.auto.corr>0.5) bootstrap.auto.corr<-1-bootstrap.auto.corr
+  if (bootstrap.slope.test>round(upper,3) | bootstrap.slope.test<round(lower,3)) pass.slope.test<-"FAILED" else pass.slope.test<-"PASSED"
+  if(bootstrap.slope.test>0.5) bootstrap.slope.test<-1-bootstrap.slope.test
 
   # Plot the test statistics estimated from the simulated data
-  if (plot==TRUE){
+  if (plot==TRUE) {
     layout(1:1)
-    plotting.distributions(bootstrap.matrix[,1],obs.auto.corr, test="auto.corr", xlab="Simulated data", main="Autocorrelation");
+    plotting.distributions(bootstrap.matrix[,1],obs.slope.test, test="slope.test", xlab="Simulated data", main="Fixed variance");
   }
 
-  #Preparing the output
-  output<-as.data.frame(cbind(round(obs.auto.corr,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.auto.corr/0.5, pass.auto.corr.test), nrow=5, byrow=TRUE)
-  rownames(output)<-"auto.corr"
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim", "p-value", "result")
+  #Preparing the ouput
+  output<-as.data.frame(cbind(round(obs.slope.test,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.slope.test/0.5, pass.slope.test), nrow=5, byrow=TRUE)
+  rownames(output)<-"slope.test"
+  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "result")
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")
   colnames(summary.out)<-("Value")
   if (save.replicates==FALSE)
-    {
+  {
     out<- list("info" = summary.out, "summary" = output)
     return(out)
-    }
+  }
   else
   {
     out<- list("replicates" = bootstrap.matrix, "info" = summary.out, "summary" = output)
     return(out)
   }
-
 }

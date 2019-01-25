@@ -1,14 +1,9 @@
-#' @title Applying 3 adequacy tests to the accelerated evolution model
+#' @title Applying 3 adequacy tests to the Random walk model
 #'
-#' @description Investigating if the accelerated evolution model is an adequate statistical description of an evolutionary
-#' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) test of accelerated evolution.
+#' @description Investigating if the Random walk model is an adequate statistical description of an evolutionary
+#' time series by applying the following tests (1) autocorrelation (2) runs test, and (3) constant variation.
 #'
 #' @param y a paleoTS object
-#'
-#' @param r parameter describing the increasing rate change through time. r is restricted to values larger than zero 
-#' (the model reduces to the BM model when r = 0).
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
 #'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
@@ -22,8 +17,11 @@
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
 #' default is TRUE.
 #'
-#' @details A wrapper function for investigating the adequacy of the accelerated rate evolution model by
-#' applying all three adequacy tests at the same time.
+#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set
+#' by the user (usually not recommended).
+#'
+#' @details A wrapper function for investigating adequacy of the directional trend model
+#' applying all three tests at the same time.
 #'
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
@@ -40,7 +38,7 @@
 #'  than the calculated statistic on the observed data. A value of 0.10 means 90 percent of the test
 #'  statistics on the simulated data are larger or smaller than the test statistic on the observed time
 #'  series.}
-#'  \item{result}{Whether the model PASSED or FAILED the adequasy test. The outcome depends on the
+#'  \item{result}{Whether the model PASSED or FAILED the adequacy test. The outcome depends on the
 #'  confidence level.}
 #'
 #'@author Kjetil L. Voje
@@ -48,63 +46,63 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{fit3adequasy.trend}}, \code{\link{fit4adequasy.stasis}}
+#'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{fit4adequacy.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating early burst
-#'x <- sim.accel_decel(ns=40, r=-1, vs=0.1)
+#'## generate a paleoTS objects by simulating random walk
+#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
 #'
-#'## Investigate if the time series pass all thee adequacy tests
-#'fit3adequacy.accel(x)
+#'## Investigate if the random walk model is an adequate description of the data
+#'fit3adequacy.RW(x)
 #'
 
-fit3adequacy.accel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
-  
-  if (is.null(vstep)) 
-    vstep<-opt.joint.accel(y)$par[2]
-  if (is.null(r)) 
-    r<-opt.joint.accel(y)$par[3]
-  
+  tt<-y$tt
 
+  anc<-opt.joint.OU(y)$parameters[1]
+  vstep<-opt.joint.OU(y)$parameters[2]
+  theta<-opt.joint.OU(y)$parameters[3]
+  alpha<-opt.joint.OU(y)$parameters[4]
+  
+  tmp_OU<-opt.joint.OU(y)
+  pred_OU<-est.OU(y, tmp_OU, tt=tt)
+  detrended_OU<-x-pred_OU$ee
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
   # Compute the test statistics for the observed time series
-  obs.auto.corr<-auto.corr(x, model="accel_decel")
-  obs.runs.test<-runs.test(x, model="accel_decel")
-  dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
-  slope_linear_model<-max(dist_trav_morphospace)/max(time)
-  obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
+  obs.auto.corr<-auto.corr(detrended_OU, model="OU", tt)
+  obs.runs.test<-runs.test(detrended_OU, model="OU", tt)
+  obs.slope.test<-slope.test(detrended_OU, model="OU", tt)
 
   #Run parametric bootstrap
-    out.auto<-auto.corr.test.accel(y, r, vstep, nrep, conf, plot=FALSE)
-    out.runs<-runs.test.accel(y, r, vstep, nrep, conf, plot=FALSE)
-    out.var<-variance.test.accel(y, r, vstep, nrep, conf, plot=FALSE)
+    out.auto<-auto.corr.test.OU(y, nrep, conf, plot=FALSE, save.replicates = TRUE)
+    out.runs<-runs.test.OU(y,nrep, conf, plot=FALSE, save.replicates = TRUE)
+    out.slope<-slope.test.OU(y,nrep, conf, plot=FALSE, save.replicates = TRUE)
 
   #Preparing the output
-    output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.var[[3]]),ncol=6,byrow=FALSE)))
+output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
+          as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
+          as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
 
   output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
                               c(output[c(3,8,13)]), c(output[c(4,9,14)]),
-                              c("", "", output[c(15)]), c(output[c(5,10,16)])), 
-                              ncol=6)
+                              c(output[c(5,10,15)])), ncol=5)
 
-  rownames(output)<-c("auto.corr", "runs.test", "var.test")
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "frac. neg. resid.", "result")
+  rownames(output)<-c("auto.corr", "runs.test", "slope.test")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "result")
 
   if (plot==TRUE) {
     par(mfrow=c(1,3))
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="faster rate");
+    plotting.distributions(out.slope$replicates,obs.slope.test, model.names[3], xlab="Simulated data", main="Fixed variance");
 
   }
   summary.out<-as.data.frame(c(nrep, conf))

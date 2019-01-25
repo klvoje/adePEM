@@ -26,9 +26,12 @@ auto.corr <- function(x, model, tt=NULL, int=NULL, mstep=NULL){
     x<-diff(x,1)
     x<-c(0,x)
   }
+  
   if (model=="trend")
     {
     x<-x-(int+mstep*tt)
   }
+ 
+  
   return(cor(x[1:length(x)-1],x[2:length(x)]))
 }

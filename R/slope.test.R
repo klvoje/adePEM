@@ -38,7 +38,13 @@ slope.test <- function(x, model, tt, theta=NULL, int=NULL, mstep=NULL){
   {
     resid_stasis<-abs(x-theta)
     slope.est<-lm(resid_stasis~tt)$coeff[2]
+   }
+  
+  if (model =="OU")
+  {
+    slope.est<-lm(abs(x)~tt)$coeff[2]
   }
+ 
 
   return(slope.est)
 }

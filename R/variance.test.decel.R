@@ -78,12 +78,8 @@ variance.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=
 
   #Matrix that will contain the test statistic for each simulated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
-
-  dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
-  slope_linear_model<-max(dist_trav_morphospace)/max(time)
-  obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
   
-  
+  obs_sum_of_residuals<-0
   # parametric boostrap
   for (i in 1:nrep){
 
@@ -96,12 +92,11 @@ variance.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=
 
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
   bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_sum_of_residuals])/nrep
-  wrong_variances<-sum(bootstrap.matrix < 0)/nrep
-  
-  # Calculating the "p-value" and whether the observed data passed the test statistic
-  if (bootstrap.var.test>round(upper,3) | bootstrap.var.test<round(lower,3) | wrong_variances >round(lower*2,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
-  if(bootstrap.var.test>0.5) bootstrap.var.test<-1-bootstrap.var.test
 
+  if (bootstrap.var.test<round(2*lower,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
+  
+  
+  
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
@@ -109,9 +104,9 @@ variance.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=
   }
 
   #Preparing the output
-  output<-as.data.frame(cbind(round(obs_sum_of_residuals,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.var.test/0.5, wrong_variances, pass.var.test), nrow=6, byrow=TRUE)
+  output<-as.data.frame(cbind(round(obs_sum_of_residuals,5), round(min(bootstrap.matrix),5), round(max(bootstrap.matrix),5), bootstrap.var.test, pass.var.test), nrow=5, byrow=TRUE)
   rownames(output)<-"var.test"
-  colnames(output)<-c("estimate","min.sim" ,"max.sim","p-value", "frac. neg. resid.", "result")
+  colnames(output)<-c("cut-off","min.sim" ,"max.sim","p-value", "result")
 
   summary.out<-as.data.frame(c(nrep, conf))
   rownames(summary.out)<-c("replications", "confidence level")

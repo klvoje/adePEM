@@ -1,15 +1,10 @@
-#' @title Applying the runs test to the accelerated evolution model
+#' @title Applying the runs test to the OU model
 #'
-#' @description Investigates if the accelerated evolution model is an adequate statistical description of an evolutionary
+#' @description Investigates if the OU model is an adequate statistical description of an evolutionary
 #' time series by applying the runs test.
 #'
 #' @param y a paleoTS object
 #' 
-#' @param r parameter describing the increasing rate change through time. r is restricted to values larger than zero 
-#' (the model reduces to the BM model when r = 0).
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
-#'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
 #' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
@@ -25,7 +20,7 @@
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
 #'
-#' @details This function applies a runs test in order to investigate if the random walk model can be judged an
+#' @details This function applies a runs test in order to investigate if the trend model can be judged an
 #' adequate statistical description of the data. After detrending, there should be no tendency in the data to successively deviate
 #' from the average in the same direction and the runs test is applied to the sign of the residuals (i.e. θ – trait value)
 #' to identify series that have non-random patterns in the sign of deviations. For a time series of length n,
@@ -56,30 +51,36 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.RW}}, \code{\link{fit3adequasy.trend}}
+#'@seealso \code{\link{runs.test.stasis}}, \code{\link{runs.test.RW}}, \code{\link{fit3adequacy.trend}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating early burst
-#'x <- sim.accel_decel(ns=40, r=-1, vs=0.1)
-#'
+#'## generate a paleoTS objects by simulating a trend
+#'x <- sim.OU(ns=20)
+
 #'## investigate if the time series pass the adequacy test
-#'runs.test.accel(x,vstep)
+#'runs.test.OU(x)
 #'
 
-runs.test.accel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+runs.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  time<-y$tt
-  
-  if (is.null(vstep)) vstep<-opt.joint.accel(y)$parameters[2]
-  if (is.null(r)) r<-opt.joint.accel(y)$parameters[3]
+  tt<-y$tt
 
+  anc<-opt.joint.OU(y)$parameters[1]
+  vstep<-opt.joint.OU(y)$parameters[2]
+  theta<-opt.joint.OU(y)$parameters[3]
+  alpha<-opt.joint.OU(y)$parameters[4]
+  
   lower<-(1-conf)/2
   upper<-(1+conf)/2
+  
+  tmp_OU<-opt.joint.OU(y)
+  pred_OU<-est.OU(y, tmp_OU, tt=tt)
+  detrended_OU<-x-pred_OU$ee
 
-  obs.runs.test<-runs.test(x, model="accel_decel")
+  obs.runs.test<-runs.test(detrended_OU, model="OU", tt)
 
   ### Parametric bootstrap routine ###
 
@@ -89,9 +90,12 @@ runs.test.accel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.accel_decel(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
-
-    bootstrap.matrix[i,1]<-runs.test(x.sim$mm, model="accel_decel")
+    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=tt)
+    tmp_OU.sim<-opt.joint.OU(x.sim)
+    pred_OU.sim<-est.OU(x.sim, tmp_OU.sim, tt=tt)
+    detrended_OU.sim<-x.sim$mm-pred_OU.sim$ee
+    
+    bootstrap.matrix[i,1]<-runs.test(detrended_OU.sim, model="OU", tt)
 
   }
 

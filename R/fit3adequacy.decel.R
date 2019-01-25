@@ -77,9 +77,9 @@ fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=T
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="accel_decel")
   obs.runs.test<-runs.test(x, model="accel_decel")
-  dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
-  slope_linear_model<-max(dist_trav_morphospace)/max(time)
-  obs_sum_of_residuals<-sum(c(0,dist_trav_morphospace)-(slope_linear_model*time))
+  #dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
+  #slope_linear_model<-max(dist_trav_morphospace)/max(time)
+  obs_sum_of_residuals<-0
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
@@ -89,15 +89,16 @@ fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=T
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
               as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-              as.vector(matrix(unlist(out.var[[3]]),ncol=6,byrow=FALSE)))
+              as.vector(matrix(unlist(out.var[[3]]),ncol=5,byrow=FALSE)))
 
-  output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
-                              c(output[c(3,8,13)]), c(output[c(4,9,14)]),
-                              c("", "", output[c(15)]), c(output[c(5,10,16)])), 
-                              ncol=6)
+                        
+    output <- as.data.frame(cbind(c(output[c(1, 6, 11)]), c(output[c(2, 7, 12)]), 
+                                  c(output[c(3, 8, 13)]), c(output[c(4, 9, 14)]), 
+                                  c(output[c(5, 10, 15)])), ncol = 5)
+                        
 
   rownames(output)<-c("auto.corr", "runs.test", "var.test")
-  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "frac. neg. resid.", "result")
+  colnames(output)<-c("estimate", "min.sim" ,"max.sim","p-value", "result")
 
   if (plot==TRUE) {
     par(mfrow=c(1,3))

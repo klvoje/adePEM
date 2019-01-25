@@ -22,7 +22,7 @@
 
 
 runs.test <- function(x, model, tt=NULL, theta=NULL, int=NULL, mstep=NULL){
-  if (model=="RW"| model=="EB")
+  if (model=="RW"| model=="accel_decel")
   {
     x<-x-x[1]
     x<-diff(x,1)
@@ -49,6 +49,14 @@ runs.test <- function(x, model, tt=NULL, theta=NULL, int=NULL, mstep=NULL){
   # with variance
   vr = (mu-1)*(mu-2)/(length(x)-1);
   z = (sum(diff(sign(x-theta))!=0)+1 - mu)/sqrt(vr)
+  }
+  
+  if (model=="OU")
+  {
+    mu = 2*(sum(x>mean(x))*sum(x<mean(x)))/length(x) +1;
+    # with variance
+    vr = (mu-1)*(mu-2)/(length(x)-1);
+    z = (sum(diff(sign(x-mean(x)))!=0)+1 - mu)/sqrt(vr)
   }
 
   return(z)
