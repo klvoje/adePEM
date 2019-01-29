@@ -78,17 +78,17 @@ fit3adequacy.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE){
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(detrended_OU, model="OU", tt)
   obs.runs.test<-runs.test(detrended_OU, model="OU", tt)
-  obs.slope.test<-slope.test(detrended_OU, model="OU", tt)
-
+  obs_sum_of_residuals<-0
+  
   #Run parametric bootstrap
     out.auto<-auto.corr.test.OU(y, nrep, conf, plot=FALSE, save.replicates = TRUE)
     out.runs<-runs.test.OU(y,nrep, conf, plot=FALSE, save.replicates = TRUE)
-    out.slope<-slope.test.OU(y,nrep, conf, plot=FALSE, save.replicates = TRUE)
+    out.var<-variance.test.OU(y,nrep, conf, plot=FALSE, save.replicates = TRUE)
 
   #Preparing the output
 output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
           as.vector(matrix(unlist(out.runs[[3]]),ncol=5,byrow=FALSE)),
-          as.vector(matrix(unlist(out.slope[[3]]),ncol=5,byrow=FALSE)))
+          as.vector(matrix(unlist(out.var[[3]]),ncol=5,byrow=FALSE)))
 
   output<-as.data.frame(cbind(c(output[c(1,6,11)]), c(output[c(2,7,12)]),
                               c(output[c(3,8,13)]), c(output[c(4,9,14)]),
@@ -102,7 +102,7 @@ output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plotting.distributions(out.slope$replicates,obs.slope.test, model.names[3], xlab="Simulated data", main="Fixed variance");
+    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="Initial rapid change");
 
   }
   summary.out<-as.data.frame(c(nrep, conf))

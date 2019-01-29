@@ -105,7 +105,7 @@ fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=T
     model.names<-c("auto.corr", "runs.test", "slope.test")
     plotting.distributions(out.auto$replicates,obs.auto.corr, model.names[1], xlab="Simulated data", main="Autocorrelation");
     plotting.distributions(out.runs$replicates,obs.runs.test, model.names[2], xlab="Simulated data", main="Runs");
-    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="slower rate");
+    plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="initial rapid change");
 
   }
   summary.out<-as.data.frame(c(nrep, conf))

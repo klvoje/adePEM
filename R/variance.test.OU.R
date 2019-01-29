@@ -1,14 +1,9 @@
-#' @title Applying the constant variance test to the decelerated evolution model
+#' @title Applying the constant variance test to the OU evolution model
 #'
-#' @description Investigates if the decelerated evolution model is an adequate statistical description of an evolutionary
+#' @description Investigates if the OU is an adequate statistical description of an evolutionary
 #' time series by applying the constant variance test.
 #'
 #' @param y a paleoTS object
-#' 
-#' @param r parameter describing the decreasing rate of evolution through time. r is restricted to values smaller than zero 
-#' (the model reduces to the BM model when r = 0).
-#'
-#' @param vstep the variance of the step distribution estimated from the observed data.
 #'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
@@ -61,15 +56,17 @@
 #'
 
 
-variance.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+variance.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   time<-y$tt
   
-  if (is.null(vstep)) vstep<-opt.joint.decel(y)$parameters[2]
-  if (is.null(r)) r<-opt.joint.decel(y)$parameters[3]
+  anc<-opt.joint.OU(y)$parameters[1]
+  vstep<-opt.joint.OU(y)$parameters[2]
+  theta<-opt.joint.OU(y)$parameters[3]
+  alpha<-opt.joint.OU(y)$parameters[4]
 
   upper<-0.80
 
@@ -82,24 +79,24 @@ variance.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.accel_decel(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
-    dist_trav_morphospace.sim<-dist.in.morphospace(x.sim, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
+    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time) 
+
+    dist_trav_morphospace.sim<-dist.in.morphospace(x.sim, correct= FALSE)$observed.accumulated.change.not.bias.cor
     slope_linear_model_sim<-max(dist_trav_morphospace.sim)/max(x.sim$tt)
     bootstrap.matrix[i,1]<-sum(c(0,dist_trav_morphospace.sim)-(slope_linear_model_sim*x.sim$tt))
-    
   }
 
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
   bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_sum_of_residuals])/nrep
 
-  if (bootstrap.var.test<round(upper,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
-  
+#  if (bootstrap.var.test<round(lower,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
+  if (bootstrap.var.test<round(upper,3))  pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
   
   
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
     layout(1:1)
-    plotting.distributions(bootstrap.matrix[,1],obs_sum_of_residuals, test="slope.test", xlab="Simulated data", main="Initial rapid evolution");
+    plotting.distributions(bootstrap.matrix[,1],obs_sum_of_residuals, test="slope.test", xlab="Simulated data", main="initital rapid evoution");
   }
 
   #Preparing the output
