@@ -46,7 +46,7 @@
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.trend}}
-#' @export
+#'@export
 #'@examples
 #'## generate a paleoTS objects by simulating early burst
 #'x <- sim.accel_decel(ns=20)
