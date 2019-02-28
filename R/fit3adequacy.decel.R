@@ -17,6 +17,10 @@
 #' is 0.95. Tests are two-tailed, which means a model is judged adequate if the observed test statistic is within the 2.5
 #' percent of the extreme values of the calculated test statistics on the simulated data given the default confidence
 #' value of 0.95.
+#' 
+#' @param cutoff confidence level for how often the distance traveled in morphospace as a function of time on average should be 
+#' larger compared to a linear model describing a constant rate of directional change from the ancestral trait state to the 
+#' last population trait mean. Number must be between 0 and 1. Default is 0.80.
 #'
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
@@ -58,7 +62,7 @@
 #'fit3adequacy.decel(x)
 #'
 
-fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=TRUE){
+fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, cutoff=0.80, plot=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -77,14 +81,12 @@ fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=T
   # Compute the test statistics for the observed time series
   obs.auto.corr<-auto.corr(x, model="accel_decel")
   obs.runs.test<-runs.test(x, model="accel_decel")
-  #dist_trav_morphospace<-dist.in.morphospace(y, correct= FALSE,iter = 10000)$observed.accumulated.change.not.bias.cor
-  #slope_linear_model<-max(dist_trav_morphospace)/max(time)
   obs_sum_of_residuals<-0
 
   #Run parametric bootstrap
     out.auto<-auto.corr.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
     out.runs<-runs.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
-    out.var<-variance.test.decel(y, r, vstep, nrep, conf, plot=FALSE)
+    out.var<-variance.test.decel(y, r, vstep, nrep, cutoff, plot=FALSE)
 
   #Preparing the output
     output<-c(as.vector(matrix(unlist(out.auto[[3]]),ncol=5,byrow=FALSE)),
@@ -108,8 +110,8 @@ fit3adequacy.decel<-function(y, vstep=NULL, r=NULL, nrep=1000, conf=0.95, plot=T
     plotting.distributions(out.var$replicates,obs_sum_of_residuals, model.names[3], xlab="Simulated data", main="initial rapid change");
 
   }
-  summary.out<-as.data.frame(c(nrep, conf))
-  rownames(summary.out)<-c("replications", "confidence level")
+  summary.out<-as.data.frame(c(nrep, conf, cutoff))
+  rownames(summary.out)<-c("replications", "confidence level", "cut-off faster evolution")
   colnames(summary.out)<-("Value")
   out<- list("info" = summary.out, "summary" = output)
   return(out)

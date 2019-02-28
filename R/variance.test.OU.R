@@ -7,11 +7,8 @@
 #'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
-#' @param conf confidence level for judging whether a model is an adequate statistical description of the data.
-#' Number must be between 0 and 1. A higher number means less strict judgment of whether a model is adequate; default
-#' is 0.95. Tests are two-tailed (except for the net evolution test), which means a model is judged adequate if the observed test statistic is within the 2.5
-#' percent of the extreme values of the calculated test statistics on the simulated data given the default confidence
-#' value of 0.95.
+#' @param cutoff confidence level for judging whether a model is an adequate statistical description of the data.
+#' Number must be between 0 and 1. Default is 0.80.
 #'
 #' @param plot logical; if TRUE, the value of the test statistic calculated based on the observed fossil
 #' time series is plotted on the distribution of test statistics calculated on the simulated time series;
@@ -20,8 +17,9 @@
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
 #'
-#' @details Estimates the slope of the least square regression of the size of the detrended data (their absolute value) from the average
-#' as a function of time.as a function of time.
+#' @details Tests if the distances traveled in morphospace as a function of time on average will be larger 
+#' compared to a linear model describing a constant rate of directional change from the ancestral trait state 
+#' to the last population trait mean.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
@@ -32,18 +30,12 @@
 #'  \item{min.sim}{The smallest test statistic calculated on the simulated data.}
 #'  \item{max.sim}{The largest test statistic calculated on the simulated data.}
 #'  \item{p-value}{Not a real p-value, but is calculated as the fraction of simulated test statistics
-#'  that is larger (or smaller) than the calculated test statistic on the observed data divided by 0.5.
-#'  A value of 1 means 50 percent of the test statistics on the simulated data are larger and smaller
-#'  than the calculated statistic on the observed data. A value of 0.10 means 90 percent of the test
-#'  statistics on the simulated data are larger or smaller than the test statistic on the observed time
-#'  series.}
+#'  that is larger than 0. A value of 0.90 means 90 percent of the test
+#'  statistics on the simulated data are larger than 0.}
 #'  \item{result}{Whether the model PASSED or FAILED the adequacy test. The outcome depends on the
 #'  confidence level.}
 #'
 #'@author Kjetil L. Voje
-#'
-#'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
-#'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
 #'@seealso \code{\link{fit3adequasy.RW}}, \code{\link{slope.test.stasis}}, \code{\link{slope.test.trend}}
 #'@export
@@ -56,7 +48,7 @@
 #'
 
 
-variance.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
+variance.test.OU<-function(y, nrep=1000, cutoff=0.80, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
@@ -68,7 +60,6 @@ variance.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   theta<-opt.joint.OU(y)$parameters[3]
   alpha<-opt.joint.OU(y)$parameters[4]
 
-  upper<-0.80
 
   ### Parametric bootstrap routine ###
 
@@ -89,8 +80,7 @@ variance.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   # Estimating the ratio of how often the observed slope statistic is smaller than the slope tests in the simulated data
   bootstrap.var.test<-length(bootstrap.matrix[,1][bootstrap.matrix[,1]>obs_sum_of_residuals])/nrep
 
-#  if (bootstrap.var.test<round(lower,3)) pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
-  if (bootstrap.var.test<round(upper,3))  pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
+  if (bootstrap.var.test<round(cutoff,3))  pass.var.test<-"FAILED" else pass.var.test<-"PASSED"
   
   
   # Plot the test statistics estimated from the simulated data
@@ -104,7 +94,7 @@ variance.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=T
   rownames(output)<-"var.test"
   colnames(output)<-c("cut-off","min.sim" ,"max.sim","p-value", "result")
 
-  summary.out<-as.data.frame(c(nrep, conf))
+  summary.out<-as.data.frame(c(nrep, cutoff))
   rownames(summary.out)<-c("replications", "confidence level")
   colnames(summary.out)<-("Value")
   if (save.replicates==FALSE)
