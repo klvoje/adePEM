@@ -8,10 +8,15 @@ Passing adequacy tests suggests the model provides an adequate statistical descr
 
 The package includes functions to simulate datasets, calculate summary statistics and plot results. 
 
+
+
 The manuscript where the `adePEM` package is presented is in press in Methods in Ecology and Evolution: 
 Assessing adequacy of models of phyletic evolution in the fossil record. Voje, K.L. Methods in Ecology and Evoluton. https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13083
 
 The methods for assessing adequacy of the stasis model were first described in the paper: Model adequacy and microevolutionary explanations for stasis in the fossil record. Voje, K.L., Starrfelt, J., and Liow, L.H. The American Naturalist. 191:509-523. (http://www.journals.uchicago.edu/doi/10.1086/696265).
+
+I have recently added three statistical tests that enable assessment of whether an OU model and the decelerated-evolution model represent adequate descriptions of phyletic trait dynamics:
+Voje, K.L. 2019. Testing eco-evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution. [In press]
 
 
 ## Installation
@@ -132,6 +137,8 @@ Hunt, G. 2006. Fitting and Comparing Models of Phyletic Evolution: Random Walks 
 
 Jones, D. 2009. Directional evolution in the conodont Pterospathodus. Paleobiology 35: 413-431. [link](http://www.bioone.org/doi/abs/10.1666/0094-8373-35.3.413)
 
-Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. Methods in Ecology and Evoluton (in press). [PDF](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13083)
+Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. Methods in Ecology and Evoluton 9:2402–2413. [PDF](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13083)
 
 Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist 191:509-523. [PDF](http://www.journals.uchicago.edu/doi/pdfplus/10.1086/696265)
+
+Voje, K.L. 2019. Testing eco-evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution. [In press]
