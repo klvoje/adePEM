@@ -24,7 +24,7 @@
 #'@author Kjetil L. Voje
 #'
 #'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
-#'
+#'@export
 #'@examples
 #'## generate a paleoTS objects by simulating a directional trend
 #'x <- sim.GRW(ns=40, ms=0.5, vs=0.1)
@@ -33,10 +33,10 @@
 #'for.plotting<-auto.corr.test.trend(x,mstep,vstep)
 #'
 #'## plot
-#'plot.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.corr")
+#'plotting.distributions(for.plotting$replicates, for.plotting$summary[1], test="auto.corr")
 #'
 
-plot.distributions<-function(sim.data, obs, test, xlab, main){
+plotting.distributions<-function(sim.data, obs, test, xlab, main){
 
   if(test=="auto.corr") {
   low<--1;

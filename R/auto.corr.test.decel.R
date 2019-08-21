@@ -1,9 +1,14 @@
-#' @title Applying the autocorrelation test to the Random walk model
+#' @title Applying the autocorrelation test to the decelerated evolution model
 #'
-#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the decelerated evolution model is an adequate statistical description of an evolutionary
 #' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
+#'
+#' @param r parameter describing the decrease in rate of evolution through time. r is restricted to values smaller than zero 
+#' (the model reduces to the BM model when r = 0).
+#'
+#' @param vstep the variance of the step distribution estimated from the observed data.
 #'
 #' @param nrep number of iterations in the parametric bootstrap (number of simulated time series); default is 1000.
 #'
@@ -19,14 +24,11 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
-#' 
-#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
-#' by the user (usually not recommended).
 #'
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
 #' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
-#' If a different model is evaluated (random walk or directional trend), the data is
+#' If a different model is evaluated (e.g. random walk or directional trend), the data is
 #' detrended prior to the calculation of autocorrelation.
 #'
 #' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
@@ -51,29 +53,30 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequasy.EB}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
+#'## generate a paleoTS objects by simulating early burst
+#'x <- sim.accel_decel(ns=40, r=-1, vs=0.1)
 #'
-#'## investigate if the time series pass the adequacy test
-#'auto.corr.test.RW(x)
+#'## investigate if the time series pass the adequasy test
+#'auto.corr.test.decel(x)
 #'
 
-auto.corr.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, vstep=NULL){
+auto.corr.test.decel<-function(y, r=NULL, vstep=NULL, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
-  tt<-y$tt
+  time<-y$tt
 
-  if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
+  if (is.null(vstep)) vstep<-opt.joint.decel(y)$parameters[2]
+  if (is.null(r)) r<-opt.joint.decel(y)$parameters[3]
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="RW")
+  obs.auto.corr<-auto.corr(x, model="accel_decel")
 
   ### Parametric bootstrap routine ###
 
@@ -84,9 +87,9 @@ auto.corr.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=tt)
+    x.sim<-sim.accel_decel(ns=length(x), r=r, vs=vstep, vp=mean(v), nn=n, tt=time)
 
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="RW")
+    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="accel_decel")
 
   }
 

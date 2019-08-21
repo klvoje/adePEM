@@ -27,7 +27,7 @@ slope.test <- function(x, model, tt, theta=NULL, int=NULL, mstep=NULL){
     tt<-tt[-(length(tt))]
     slope.est<-(lm((abs(x))~tt)$coeff[2])
   }
-
+  
   if (model =="trend")
   {
     x<-x-(int+mstep*tt)
@@ -38,7 +38,13 @@ slope.test <- function(x, model, tt, theta=NULL, int=NULL, mstep=NULL){
   {
     resid_stasis<-abs(x-theta)
     slope.est<-lm(resid_stasis~tt)$coeff[2]
+   }
+  
+  if (model =="OU")
+  {
+    slope.est<-lm(abs(x)~tt)$coeff[2]
   }
+ 
 
   return(slope.est)
 }

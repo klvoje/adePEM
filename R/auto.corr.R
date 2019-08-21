@@ -20,15 +20,18 @@
 
 
 auto.corr <- function(x, model, tt=NULL, int=NULL, mstep=NULL){
-  if (model=="RW")
+  if (model=="RW" | model=="accel_decel")
     {
     x<-x-x[1]
     x<-diff(x,1)
     x<-c(0,x)
   }
+  
   if (model=="trend")
     {
     x<-x-(int+mstep*tt)
   }
+ 
+  
   return(cor(x[1:length(x)-1],x[2:length(x)]))
 }

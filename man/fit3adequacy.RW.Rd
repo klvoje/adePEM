@@ -4,7 +4,8 @@
 \alias{fit3adequacy.RW}
 \title{Applying 3 adequacy tests to the Random walk model}
 \usage{
-fit3adequacy.RW(y, nrep = 1000, conf = 0.95, plot = TRUE, vstep = NULL)
+fit3adequacy.RW(y, nrep = 1000, conf = 0.95, plot = TRUE,
+  vstep = NULL)
 }
 \arguments{
 \item{y}{a paleoTS object}
@@ -58,7 +59,9 @@ fit3adequacy.RW(x)
 
 }
 \references{
-Voje, K.L., Starrfelt, J., and Liow, L.H. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. In press.
+Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
+
+Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 }
 \seealso{
 \code{\link{fit3adequacy.trend}}, \code{\link{fit4adequacy.stasis}}

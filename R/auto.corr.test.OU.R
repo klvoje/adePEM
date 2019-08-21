@@ -1,6 +1,6 @@
-#' @title Applying the autocorrelation test to the Random walk model
+#' @title Applying the autocorrelation test to the OU model
 #'
-#' @description Investigates if the Random walk model is an adequate statistical description of an evolutionary
+#' @description Investigates if the OU model is an adequate statistical description of an evolutionary
 #' time series by applying the autocorrelation test.
 #'
 #' @param y a paleoTS object
@@ -19,17 +19,14 @@
 #'
 #' @param save.replicates logical; if TRUE, the values of the test statistic calculated on the simulated time
 #' series is saved and can be accessed later for plotting purposes; default is TRUE.
-#' 
-#' @param vstep the variance of the step distribution. This parameter is automatically estimated from the data, if not set 
-#' by the user (usually not recommended).
 #'
 #' @details This function calculates the autocorrelation in a vector of sample means
 #' defined as the correlation of the first n-1 observations with the last n-1. The
 #' autocorrelation is calculated directly on the sample means if the evaluated model is stasis.
-#' If a different model is evaluated (random walk or directional trend), the data is
+#' If a different model is evaluated (random walk or trend), the data is
 #' detrended prior to the calculation of autocorrelation.
 #'
-#' @return First part of the output summarizes the number of iterations in the parametric boostrap and the
+#' @return First part of the output summarizes the number of iterations in the parametric bootstrap and the
 #' confidence level for judging whether a model is an adequate statistical description of the data. The last
 #' part of the output is:
 #'
@@ -51,42 +48,53 @@
 #'@references Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. \emph{Methods in Ecology and Evoluton}. (in press).
 #'@references Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. \emph{The American Naturalist}. 191:509-523.
 #'
-#'@seealso \code{\link{fit3adequacy.RW}}, \code{\link{auto.corr.test.trend}}, \code{\link{auto.corr.test.stasis}}
+#'@seealso \code{\link{fit3adequacy.trend}}, \code{\link{auto.corr.test.RW}}, \code{\link{auto.corr.test.stasis}}
 #' @export
 #'@examples
-#'## generate a paleoTS objects by simulating a directional trend
-#'x <- sim.GRW(ns=40, ms=0, vs=0.1)
+#'## generate a paleoTS objects by simulating a trend
+#'x <- sim.OU(ns=40)
 #'
 #'## investigate if the time series pass the adequacy test
-#'auto.corr.test.RW(x)
+#'auto.corr.test.OU(x)
 #'
 
-auto.corr.test.RW<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE, vstep=NULL){
+
+auto.corr.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=TRUE){
 
   x<-y$mm
   v<-y$vv
   n<-y$nn
   tt<-y$tt
 
-  if (is.null(vstep)) vstep<-opt.joint.URW(y)$parameters[2]
+  anc<-opt.joint.OU(y)$parameters[1]
+  vstep<-opt.joint.OU(y)$parameters[2]
+  theta<-opt.joint.OU(y)$parameters[3]
+  alpha<-opt.joint.OU(y)$parameters[4]
+  
+  tmp_OU<-opt.joint.OU(y)
+  pred_OU<-est.OU(y, tmp_OU, tt=tt)
+  detrended_OU<-x-pred_OU$ee
   
   lower<-(1-conf)/2
   upper<-(1+conf)/2
 
-  obs.auto.corr<-auto.corr(x, model="RW")
+  obs.auto.corr<-auto.corr(detrended_OU, model="OU", tt)
 
   ### Parametric bootstrap routine ###
 
-  #Matrix that will contain the test statistic for each simuluated data set (time series)
+  #Matrix that will contain the test statistic for each simulated data set (time series)
   bootstrap.matrix<-matrix(data = NA, nrow = nrep, ncol = 1)
 
 
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.GRW(ns=length(x), ms=0, vs=vstep, vp=mean(v), nn=n, tt=tt)
-
-    bootstrap.matrix[i,1]<-auto.corr(x.sim$mm, model="RW")
+    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=tt)
+    tmp_OU.sim<-opt.joint.OU(x.sim)
+    pred_OU.sim<-est.OU(x.sim, tmp_OU.sim, tt=tt)
+    detrended_OU.sim<-x.sim$mm-pred_OU.sim$ee
+    
+    bootstrap.matrix[i,1]<-auto.corr(detrended_OU.sim, model="OU", tt)
 
   }
 
