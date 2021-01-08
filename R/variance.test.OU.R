@@ -85,7 +85,6 @@ variance.test.OU<-function(y, nrep=1000, cutoff=0.80, plot=TRUE, save.replicates
   
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
-    layout(1:1)
     plotting.distributions(bootstrap.matrix[,1],obs_sum_of_residuals, test="slope.test", xlab="Simulated data", main="initital rapid evoution");
   }
 
