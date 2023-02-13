@@ -81,7 +81,7 @@ net.change.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replic
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = v, nn = n, tt = tt)
+    x.sim<-sim.Stasis(ns = length(x), theta = theta, omega = omega, vp = mean(v), nn = n, tt = tt)
 
     bootstrap.matrix[i,1]<-net.change.test(x.sim$mm, model="stasis")
 
@@ -95,7 +95,7 @@ net.change.test.stasis<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replic
 
   # Plot the test statistics estimated from the simulated data
   if (plot==TRUE) {
-    layout(1:1)
+    par(mfrow=c(1,1))
     plotting.distributions(bootstrap.matrix[,1],obs.net.change.test, test="net.change.test", xlab="Simulated data", main="Net evolution");
   }
 
