@@ -1,25 +1,27 @@
-## About adePEM (Assessing adequacy of phyletic-evolution models) 
+## About adePEM (Assessing adequacy of within-lineage phenotypic evolution models) 
 
-This package allows assessing the adequacy of the three canonical models of evolution in the fossil record stasis, trend and random walk developed by Hunt (2006) and implemented in the R package `paleoTS`.
+The `adePEM` package allows assessing the adequacy of models of within-lineage phenotypic evolution.
 
-Model fit in `paleoTS` is evaluated using AICc. However, the best model among a list of candidates according to an information criterion may not describe the data particularly well. This is true because any set of candidate models will only reflect a subset of ways of portraying evolutionary dynamics in a lineage. 
+The package contains tests to assess the adequacy of the following models: stasis, unbiased random walk (with fixed or decelerating rates of evolution), biased random walk (trend model), and various versions of Ornstein-Uhlenbeck models. These models are available in the R packages `paleoTS` and `evoTS`.  
 
-Passing adequacy tests suggests the model provides an adequate statistical description of the trait dynamics in the data and that meaningful inferences can be drawn from the estimated model parameters. 
+Models fit in `paleoTS` and `evoTS` are evaluated using AICc. However, the best model among a list of candidates according to an information criterion may not describe the data particularly well. This is true because any set of candidate models will only reflect a subset of ways of portraying evolutionary dynamics in a lineage. 
 
-The package includes functions to simulate datasets, calculate summary statistics and plot results. 
+Passing adequacy tests suggests the model provides an adequate statistical description of the trait dynamics in the data and that meaningful inferences can be drawn from the estimated model parameters.
+
+The `adePEM` package includes functions to simulate data sets, calculate summary statistics and plot results. 
+
+# Literature: 
+The manuscript where the `adePEM` package is presented: 
+Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossil record. Methods in Ecology and Evolution 9:2402-2413. https://doi.org/10.1111/2041-210X.13083
+
+The methods for assessing adequacy of the stasis model were first described in this paper: 
+Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist. 191:509-523. https://doi.org/10.1086/696265
+
+Adequacy tests for OU models and the unbiased random walk with a decelerating rate of evolution were published in this paper:
+Voje, K.L. 2020. Testing eco‐evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution 74:188-200. https://doi.org/10.1111/evo.13869.
 
 
-
-The manuscript where the `adePEM` package is presented is in press in Methods in Ecology and Evolution: 
-Assessing adequacy of models of phyletic evolution in the fossil record. Voje, K.L. Methods in Ecology and Evoluton. https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13083
-
-The methods for assessing adequacy of the stasis model were first described in the paper: Model adequacy and microevolutionary explanations for stasis in the fossil record. Voje, K.L., Starrfelt, J., and Liow, L.H. The American Naturalist. 191:509-523. (http://www.journals.uchicago.edu/doi/10.1086/696265).
-
-I have recently added three statistical tests that enable assessment of whether an OU model and the decelerated-evolution model represent adequate descriptions of phyletic trait dynamics:
-Voje, K.L. 2019. Testing eco-evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution. [In press]
-
-
-## Installation
+# Installation
 
 Install the package from github using devtools:
 
@@ -28,19 +30,20 @@ install.packages("devtools")
 
 devtools::install_github("klvoje/adePEM")
 
-require(adePEM)
+library(adePEM)
 ```
 
-The `adePEM` package depends on the `paleoTS` package, which can be installed from CRAN. 
+The `adePEM` package tests the adequacy of models implemented in the `paleoTS` and `evoTS` packages. Both packages are available on CRAN: 
 
 ```
 install.packages("paleoTS")
-
-require(paleoTS)
+install.packages("evoTS")
+library(paleoTS)
+library(evoTS)
 ```
 
 
-## Example
+# Example
 
 We are interested in analyzing the evolution of element length (measured in mm) in the conodont Pterospathodus. The data is available as part of the `adePEM` package and was originally published by Jones (2009). The data (`element.length`) is already a `paleoTS` object. We first plot the data. 
 
@@ -128,7 +131,7 @@ Functions for running each adequacy test alone are provided in the package (e.g.
 
 ## Author
 
-Kjetil L. Voje <k.l.voje@gmail.com>
+Kjetil Lysne Voje <k.l.voje@nhm.uio.no>
 
 
 ## References
@@ -141,4 +144,4 @@ Voje, K.L. 2018. Assessing adequacy of models of phyletic evolution in the fossi
 
 Voje, K.L., Starrfelt, J., and Liow, L.H. 2018. Model adequacy and microevolutionary explanations for stasis in the fossil record. The American Naturalist 191:509-523. [PDF](http://www.journals.uchicago.edu/doi/pdfplus/10.1086/696265)
 
-Voje, K.L. 2019. Testing eco-evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution. [In press]
+Voje, K.L. 2020. Testing eco‐evolutionary predictions using fossil data: Phyletic evolution following ecological opportunity. Evolution 74:188-200. [PDF]( https://doi.org/10.1111/evo.13869)
