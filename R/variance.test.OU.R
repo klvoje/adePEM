@@ -70,7 +70,7 @@ variance.test.OU<-function(y, nrep=1000, cutoff=0.80, plot=TRUE, save.replicates
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time) 
+    x.sim<-sim.OU.modified(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=time) 
 
     dist_trav_morphospace.sim<-dist.in.morphospace(x.sim, correct= FALSE)$observed.accumulated.change.not.bias.cor
     slope_linear_model_sim<-max(dist_trav_morphospace.sim)/max(x.sim$tt)

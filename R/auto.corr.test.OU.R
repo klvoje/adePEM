@@ -89,7 +89,7 @@ auto.corr.test.OU<-function(y, nrep=1000, conf=0.95, plot=TRUE, save.replicates=
   # parametric boostrap
   for (i in 1:nrep){
 
-    x.sim<-sim.OU(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=tt)
+    x.sim<-sim.OU.modified(ns=length(x), anc=anc, theta=theta, alpha=alpha, vs=vstep, vp=mean(v), nn=n, tt=tt)
     tmp_OU.sim<-opt.joint.OU(x.sim)
     pred_OU.sim<-est.OU(x.sim, tmp_OU.sim, tt=tt)
     detrended_OU.sim<-x.sim$mm-pred_OU.sim$ee
