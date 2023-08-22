@@ -8,7 +8,7 @@ sim.OU.modified<-function (ns = 20, anc = 0, theta = 10, alpha = 0.3, vstep = 0.
   MM[1] <- anc
   x <- rnorm(nn[1], mean = MM[1], sd = sqrt(vp))
   mm[1] <- mean(x)
-  vv[1] <- var(x)
+  if (length(x) == 1) vv[1] <- 0 else vv[1] <- var(x)
   for (i in 2:ns) {
     ex <- paleoTS:::ou.M(MM[i - 1], theta, alpha, dt[i - 1])
     vx <- paleoTS:::ou.V(vstep, alpha, dt[i - 1])
