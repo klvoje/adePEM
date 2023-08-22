@@ -17,6 +17,7 @@ sim.OU.modified<-function (ns = 20, anc = 0, theta = 10, alpha = 0.3, vstep = 0.
     mm[i] <- mean(x)
     if (length(x) == 1) vv[i] <- 0 else vv[i] <- var(x)
   }
+  if (sum(vv) == 0) vv <- vv + 1e-08
   gp <- c(anc, theta, alpha, vstep)
   names(gp) <- c("anc", "theta", "alpha", "vstep")
   res <- as.paleoTS(mm = as.vector(mm), vv = as.vector(vv), 
